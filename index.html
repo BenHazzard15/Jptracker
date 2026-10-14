@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Mis Bebés">
+    <title>Mis Bebés - Rutina</title>
+    <!-- Ícono pastel embebido para la pantalla de inicio del iPhone -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%23EAC8CA'/><circle cx='90' cy='90' r='58' fill='%23FAF6F0'/><text x='90' y='112' font-size='68' text-anchor='middle'>🍼</text></svg>">
+    <style>
+        :root {
+            --bg-cream: #FAF6F0;
+            --card-beige: #F2EAE1;
+            --pale-pink: #EAC8CA;
+            --deep-pink: #C98A8E;
+            --pastel-sage: #CFE0D8;
+            --deep-sage: #6E9483;
+            --night-lavender: #D8D2E7;
+            --text-dark: #4A4238;
+            --text-muted: #8C8275;
+            --white: #FFFFFF;
+        }
+        * {
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background-color: var(--bg-cream);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 14px 16px 108px 16px;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+            user-select: none;
+        }
+
+        /* Selector Superior de Perfiles por Hijo */
+        .profile-bar {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+            scrollbar-width: none;
+        }
+        .profile-bar::-webkit-scrollbar {
+            display: none;
+        }
+        .profile-pill {
+            background: var(--card-beige);
+            color: var(--text-muted);
+            border: 2px solid transparent;
+            padding: 10px 16px;
+            border-radius: 999px;
+            font-size: 15px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        .profile-pill.active {
+            background: var(--pale-pink);
+            color: var(--text-dark);
+            border-color: var(--deep-pink);
+        }
+        .profile-pill.add-btn {
+            background: var(--white);
+            border: 2px dashed var(--deep-pink);
+            color: var(--deep-pink);
+        }
+
+        /* Tarjetas de Próxima Toma / Siesta */
+        .predictions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .pred-box {
+            background: var(--pale-pink);
+            padding: 16px 12px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 4px 14px rgba(201, 138, 142, 0.18);
+        }
+        .pred-box.nap {
+            background: var(--pastel-sage);
+            box-shadow: 0 4px 14px rgba(110, 148, 131, 0.18);
+        }
+        .pred-box small {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            display: block;
+            opacity: 0.85;
+        }
+        .pred-box strong {
+            font-size: 30px;
+            display: block;
+            margin: 4px 0;
+        }
+        .pred-box .mode-badge {
+            font-size: 11px;
+            background: rgba(255,255,255,0.65);
+            padding: 3px 8px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        /* Banner de Siesta en Curso (1 mano) */
+        .ongoing-nap-banner {
+            background: var(--night-lavender);
+            padding: 16px;
+            border-radius: 22px;
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border: 2px solid #B5A8D1;
+        }
+        .ongoing-nap-banner button {
+            background: var(--text-dark);
+            color: var(--white);
+            border: none;
+            padding: 16px;
+            border-radius: 16px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* 2 Botones Gigantes para usar con 1 mano */
+        .big-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .big-btn {
+            width: 100%;
+            padding: 22px 20px;
+            border-radius: 24px;
+            border: none;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+            transition: transform 0.1s;
+        }
+        .big-btn:active {
+            transform: scale(0.98);
+        }
+        .big-btn.milk {
+            background: var(--pale-pink);
+            border: 2px solid var(--deep-pink);
+        }
+        .big-btn.nap {
+            background: var(--pastel-sage);
+            border: 2px solid var(--deep-sage);
+        }
+
+        /* Contenedores Generales */
+        .card {
+            background: var(--card-beige);
+            padding: 18px;
+            border-radius: 24px;
+            margin-bottom: 16px;
+        }
+        .card h3 {
+            margin: 0 0 12px 0;
+            font-size: 17px;
+        }
+
+        /* Lista limpia en Hoy */
+        .today-item {
+            background: var(--white);
+            padding: 14px 16px;
+            border-radius: 16px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 15px;
+        }
+        .today-item button {
+            background: var(--pale-pink);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+
+        /* Calendario Mensual */
+        .cal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            gap: 8px;
+        }
+        .cal-nav-btn {
+            background: var(--white);
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+        .cal-select-group {
+            display: flex;
+            gap: 6px;
+        }
+        .cal-select {
+            background: var(--white);
+            border: 1px solid var(--deep-pink);
+            padding: 8px 10px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-dark);
+            outline: none;
+        }
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            text-align: center;
+        }
+        .cal-day-name {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+            padding-bottom: 6px;
+        }
+        .cal-cell {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            background: var(--white);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+        }
+        .cal-cell.has-data {
+            background: var(--pale-pink);
+        }
+        .cal-cell.selected {
+            outline: 3px solid var(--text-dark);
+        }
+        .cal-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--deep-pink);
+            margin-top: 2px;
+        }
+
+        /* Grilla estilo Google Calendar (24 horas) */
+        .gcal-timeline {
+            position: relative;
+            background: var(--white);
+            border-radius: 18px;
+            height: 520px;
+            overflow-y: auto;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+        .gcal-canvas {
+            position: relative;
+            height: 864px; /* 24 horas * 36px por hora */
+        }
+        .gcal-hour-row {
+            height: 36px;
+            border-bottom: 1px solid #F3EFEA;
+            display: flex;
+            align-items: flex-start;
+            padding-left: 8px;
+            padding-top: 2px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .gcal-event {
+            position: absolute;
+            left: 58px;
+            right: 12px;
+            border-radius: 8px;
+            padding: 4px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+        }
+        .gcal-event.milk {
+            background: var(--pale-pink);
+            border-left: 4px solid var(--deep-pink);
+            height: 26px;
+            z-index: 2;
+        }
+        .gcal-event.nap {
+            background: var(--pastel-sage);
+            border-left: 4px solid var(--deep-sage);
+            z-index: 1;
+        }
+
+        /* Estadísticas y Filtros */
+        .range-pills {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .range-pill {
+            flex: 1;
+            padding: 12px;
+            border-radius: 14px;
+            border: none;
+            background: var(--card-beige);
+            font-weight: 600;
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+        .range-pill.active {
+            background: var(--deep-pink);
+            color: var(--white);
+        }
+        svg.line-chart {
+            width: 100%;
+            height: 190px;
+            background: var(--white);
+            border-radius: 16px;
+            padding: 10px;
+        }
+
+        /* Modal Inferior (Bottom Sheet) para usar con una mano */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 100;
+        }
+        .bottom-sheet {
+            background: var(--bg-cream);
+            width: 100%;
+            max-width: 480px;
+            border-radius: 28px 28px 0 0;
+            padding: 24px 20px 36px 20px;
+            box-shadow: 0 -8px 30px rgba(0,0,0,0.18);
+        }
+        .sheet-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 0 0 16px 0;
+            text-align: center;
+        }
+        .big-segmented {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+        .seg-btn {
+            padding: 18px 12px;
+            border-radius: 18px;
+            border: 2px solid var(--pale-pink);
+            background: var(--white);
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+        .seg-btn.active {
+            background: var(--pale-pink);
+            border-color: var(--deep-pink);
+            color: var(--text-dark);
+        }
+        .big-input {
+            width: 100%;
+            padding: 16px;
+            font-size: 22px;
+            font-weight: 700;
+            text-align: center;
+            border-radius: 18px;
+            border: 2px solid var(--pale-pink);
+            background: var(--white);
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+        .sheet-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-cancel {
+            flex: 1;
+            padding: 18px;
+            border-radius: 18px;
+            border: none;
+            background: var(--card-beige);
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+        .btn-save {
+            flex: 2;
+            padding: 18px;
+            border-radius: 18px;
+            border: none;
+            background: var(--deep-pink);
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--white);
+            cursor: pointer;
+        }
+
+        /* Barra Inferior Grandes Botones */
+        .tab-bar {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: var(--card-beige);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            padding: 10px 8px 24px 8px;
+            border-top: 1px solid rgba(0,0,0,0.06);
+            z-index: 50;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 10px 4px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+            border-radius: 14px;
+            cursor: pointer;
+        }
+        .tab-btn.active {
+            background: var(--pale-pink);
+            color: var(--text-dark);
+        }
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            font-size: 15px;
+        }
+        .setting-row:last-child {
+            border-bottom: none;
+        }
+        .setting-row input {
+            width: 115px;
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid var(--deep-pink);
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            background: var(--white);
+            color: var(--text-dark);
+        }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <!-- Selector de Hijos (Perfiles) -->
+    <div class="profile-bar" id="profile-bar"></div>
+
+    <!-- PESTAÑA 1: HOY (100% pensada para una sola mano) -->
+    <div id="view-home">
+        <div class="predictions-grid">
+            <div class="pred-box">
+                <small>Próxima Leche</small>
+                <strong id="next-milk-time">--:--</strong>
+                <span class="mode-badge" id="next-milk-badge">Gap Día</span>
+            </div>
+            <div class="pred-box nap">
+                <small>Próxima Siesta</small>
+                <strong id="next-nap-time">--:--</strong>
+                <span class="mode-badge" id="next-nap-badge">Gap Día</span>
+            </div>
+        </div>
+
+        <!-- Banner automático si hay una siesta iniciada sin hora de fin -->
+        <div id="ongoing-nap-container" class="ongoing-nap-banner hidden">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span>😴 <strong>Durmiendo ahora</strong> (inició <span id="ongoing-nap-start"></span>)</span>
+            </div>
+            <button onclick="openFinishNapModal()">☀️ Despertó (Registrar Fin)</button>
+        </div>
+
+        <!-- Dos Botones Grandes para el Pulgar -->
+        <div class="big-actions">
+            <button class="big-btn milk" onclick="openMilkModal()">
+                🍼 Registrar Leche
+            </button>
+            <button class="big-btn nap" onclick="openNapModal()">
+                ☁️ Registrar Siesta
+            </button>
+        </div>
+
+        <!-- Resumen limpio de lo que lleva hoy -->
+        <div class="card">
+            <h3>📋 Lo que lleva hoy (<span id="today-date-title"></span>)</h3>
+            <div id="today-list"></div>
+        </div>
+    </div>
+
+    <!-- PESTAÑA 2: CALENDARIO MENSUAL + GOOGLE CALENDAR TIMELINE -->
+    <div id="view-calendar" class="hidden">
+        <div class="card">
+            <div class="cal-header">
+                <button class="cal-nav-btn" onclick="changeMonth(-1)">‹</button>
+                <div class="cal-select-group">
+                    <select id="cal-month-select" class="cal-select" onchange="onMonthYearSelect()"></select>
+                    <select id="cal-year-select" class="cal-select" onchange="onMonthYearSelect()"></select>
+                </div>
+                <button class="cal-nav-btn" onclick="changeMonth(1)">›</button>
+            </div>
+            <div class="cal-grid">
+                <div class="cal-day-name">L</div><div class="cal-day-name">M</div>
+                <div class="cal-day-name">M</div><div class="cal-day-name">J</div>
+                <div class="cal-day-name">V</div><div class="cal-day-name">S</div>
+                <div class="cal-day-name">D</div>
+            </div>
+            <div class="cal-grid" id="cal-grid-body"></div>
+        </div>
+
+        <div class="card">
+            <h3>🗓️ Horario del Día (<span id="selected-cal-date-label"></span>)</h3>
+            <div class="gcal-timeline" id="gcal-scroll-box">
+                <div class="gcal-canvas" id="gcal-timeline"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PESTAÑA 3: ESTADÍSTICAS CON GRÁFICOS DE LÍNEA (DD/MM) -->
+    <div id="view-stats" class="hidden">
+        <div class="range-pills">
+            <button class="range-pill active" id="range-7" onclick="setStatsRange(7)">Última Semana</button>
+            <button class="range-pill" id="range-30" onclick="setStatsRange(30)">Último Mes</button>
+            <button class="range-pill" id="range-365" onclick="setStatsRange(365)">Último Año</button>
+        </div>
+
+        <div class="card">
+            <h3>📈 Gap Promedio entre Leches (Horas)</h3>
+            <svg class="line-chart" id="chart-milk-gap" viewBox="0 0 340 165"></svg>
+        </div>
+
+        <div class="card">
+            <h3>🌙 Horas de Sueño en Siestas (Día/Mes)</h3>
+            <svg class="line-chart" id="chart-sleep-hours" viewBox="0 0 340 165"></svg>
+        </div>
+    </div>
+
+    <!-- PESTAÑA 4: AJUSTES DÍA Y NOCHE -->
+    <div id="view-settings" class="hidden">
+        <div class="card">
+            <h3>☀️ Gaps de Día</h3>
+            <div class="setting-row">
+                <span>Horas entre Leche (Día)</span>
+                <input type="number" step="0.5" min="0.5" max="12" id="set-day-milk" onchange="saveSettings()">
+            </div>
+            <div class="setting-row">
+                <span>Horas entre Siestas (Día)</span>
+                <input type="number" step="0.5" min="0.5" max="12" id="set-day-nap" onchange="saveSettings()">
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>🌙 Horario y Gaps Nocturnos</h3>
+            <div class="setting-row">
+                <span>Inicio Horario Nocturno</span>
+                <input type="time" id="set-night-start" onchange="saveSettings()">
+            </div>
+            <div class="setting-row">
+                <span>Fin Horario Nocturno</span>
+                <input type="time" id="set-night-end" onchange="saveSettings()">
+            </div>
+            <div class="setting-row">
+                <span>Horas entre Leche (Noche)</span>
+                <input type="number" step="0.5" min="0.5" max="14" id="set-night-milk" onchange="saveSettings()">
+            </div>
+            <div class="setting-row">
+                <span>Gap Sueño Nocturno (Horas)</span>
+                <input type="number" step="0.5" min="0.5" max="14" id="set-night-nap" onchange="saveSettings()">
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 1: REGISTRAR LECHE -->
+    <div id="modal-milk" class="modal-backdrop hidden">
+        <div class="bottom-sheet">
+            <h3 class="sheet-title">🍼 Registrar Toma de Leche</h3>
+            <div class="big-segmented">
+                <button class="seg-btn active" id="btn-milk-breast" onclick="selectMilkType('Leche Materna')">Leche Materna</button>
+                <button class="seg-btn" id="btn-milk-formula" onclick="selectMilkType('Fórmula')">Fórmula</button>
+            </div>
+            <label style="display:block; text-align:center; margin-bottom:6px; color:var(--text-muted);">Hora de la toma</label>
+            <input type="time" id="input-milk-time" class="big-input">
+            <div class="sheet-actions">
+                <button class="btn-cancel" onclick="closeModals()">Cancelar</button>
+                <button class="btn-save" onclick="confirmMilk()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: REGISTRAR SIESTA -->
+    <div id="modal-nap" class="modal-backdrop hidden">
+        <div class="bottom-sheet">
+            <h3 class="sheet-title" id="nap-modal-title">☁️ Registrar Siesta</h3>
+            <div class="big-segmented" id="nap-mode-selector">
+                <button class="seg-btn active" id="btn-nap-start-only" onclick="setNapMode('startOnly')">😴 Se durmió ahora</button>
+                <button class="seg-btn" id="btn-nap-complete" onclick="setNapMode('complete')">✅ Inicio y Fin</button>
+            </div>
+            <div id="nap-start-wrapper">
+                <label style="display:block; text-align:center; margin-bottom:6px; color:var(--text-muted);">Hora de Inicio (Se durmió)</label>
+                <input type="time" id="input-nap-start" class="big-input">
+            </div>
+            <div id="nap-end-wrapper" class="hidden">
+                <label style="display:block; text-align:center; margin-bottom:6px; color:var(--text-muted);">Hora de Fin (Despertó)</label>
+                <input type="time" id="input-nap-end" class="big-input">
+            </div>
+            <div class="sheet-actions">
+                <button class="btn-cancel" onclick="closeModals()">Cancelar</button>
+                <button class="btn-save" onclick="confirmNap()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: CREAR NUEVO PERFIL DE HIJO -->
+    <div id="modal-profile" class="modal-backdrop hidden">
+        <div class="bottom-sheet">
+            <h3 class="sheet-title">👶 Nuevo Perfil de Hijo</h3>
+            <label style="display:block; text-align:center; margin-bottom:6px; color:var(--text-muted);">Nombre de tu hijo/a</label>
+            <input type="text" id="input-profile-name" class="big-input" placeholder="Ej: Mateo">
+            <div class="sheet-actions">
+                <button class="btn-cancel" onclick="closeModals()">Cancelar</button>
+                <button class="btn-save" onclick="confirmNewProfile()">Crear Perfil</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navegación Inferior -->
+    <div class="tab-bar">
+        <button class="tab-btn active" id="tab-home" onclick="switchTab('home')">Hoy</button>
+        <button class="tab-btn" id="tab-calendar" onclick="switchTab('calendar')">Calendario</button>
+        <button class="tab-btn" id="tab-stats" onclick="switchTab('stats')">Estadísticas</button>
+        <button class="tab-btn" id="tab-settings" onclick="switchTab('settings')">Ajustes</button>
+    </div>
+
+    <script>
+        function getLocalTodayISO() {
+            const d = new Date();
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        }
+
+        const todayISO = getLocalTodayISO();
+        let currentMilkType = 'Leche Materna';
+        let currentNapMode = 'startOnly';
+        let finishingNapIndex = null;
+        let calYear = new Date().getFullYear();
+        let calMonth = new Date().getMonth();
+        let selectedCalDate = todayISO;
+        let statsRangeDays = 7;
+
+        const defaultProfileData = () => ({
+            settings: {
+                dayMilkGap: 3.0,
+                dayNapGap: 2.0,
+                nightStart: '21:00',
+                nightEnd: '07:00',
+                nightMilkGap: 5.0,
+                nightNapGap: 4.0
+            },
+            days: {}
+        });
+
+        // Almacenamiento seguro compatible con archivos locales y Web Hosting
+        let memoryFallback = null;
+        function loadDB() {
+            try { return JSON.parse(localStorage.getItem('babyOneHandDB')); }
+            catch (e) { return memoryFallback; }
+        }
+
+        let state = loadDB() || {
+            activeChild: 'José Pedro',
+            profiles: {
+                'José Pedro': defaultProfileData(),
+                'Agustín': defaultProfileData()
+            }
+        };
+
+        function saveState() {
+            try { localStorage.setItem('babyOneHandDB', JSON.stringify(state)); }
+            catch (e) { memoryFallback = state; }
+            renderAll();
+        }
+
+        function getActiveProfile() {
+            return state.profiles[state.activeChild];
+        }
+
+        function ensureDay(profile, dateISO) {
+            if (!profile.days[dateISO]) {
+                profile.days[dateISO] = { feeds: [], naps: [] };
+            }
+            return profile.days[dateISO];
+        }
+
+        function timeToMins(t) {
+            if (!t) return 0;
+            const [h, m] = t.split(':').map(Number);
+            return h * 60 + m;
+        }
+
+        function minsToTime(m) {
+            const norm = ((m % 1440) + 1440) % 1440;
+            const hh = String(Math.floor(norm / 60)).padStart(2, '0');
+            const mm = String(Math.round(norm % 60)).padStart(2, '0');
+            return `${hh}:${mm}`;
+        }
+
+        function formatDDMM(iso) {
+            const parts = iso.split('-');
+            return `${parts[2]}/${parts[1]}`;
+        }
+
+        function isNightTime(timeStr, settings) {
+            const m = timeToMins(timeStr);
+            const start = timeToMins(settings.nightStart);
+            const end = timeToMins(settings.nightEnd);
+            if (start > end) {
+                return m >= start || m < end;
+            }
+            return m >= start && m < end;
+        }
+
+        function renderProfiles() {
+            const bar = document.getElementById('profile-bar');
+            bar.innerHTML = '';
+            Object.keys(state.profiles).forEach(name => {
+                const btn = document.createElement('button');
+                btn.className = `profile-pill ${name === state.activeChild ? 'active' : ''}`;
+                btn.textContent = `👶 ${name}`;
+                btn.onclick = () => {
+                    state.activeChild = name;
+                    saveState();
+                };
+                bar.appendChild(btn);
+            });
+            const addBtn = document.createElement('button');
+            addBtn.className = 'profile-pill add-btn';
+            addBtn.textContent = '+ Hijo';
+            addBtn.onclick = () => {
+                document.getElementById('input-profile-name').value = '';
+                document.getElementById('modal-profile').classList.remove('hidden');
+            };
+            bar.appendChild(addBtn);
+        }
+
+        function confirmNewProfile() {
+            const nameInput = document.getElementById('input-profile-name').value.trim();
+            if (!nameInput) return;
+            if (!state.profiles[nameInput]) {
+                state.profiles[nameInput] = defaultProfileData();
+            }
+            state.activeChild = nameInput;
+            closeModals();
+            saveState();
+        }
+
+        function renderHome() {
+            const prof = getActiveProfile();
+            const s = prof.settings;
+            const day = ensureDay(prof, todayISO);
+            document.getElementById('today-date-title').textContent = formatDDMM(todayISO);
+
+            // Cálculo Próxima Leche (Día vs Noche)
+            const lastFeed = day.feeds[day.feeds.length - 1];
+            if (lastFeed) {
+                const night = isNightTime(lastFeed.time, s);
+                const gap = night ? s.nightMilkGap : s.dayMilkGap;
+                document.getElementById('next-milk-time').textContent = minsToTime(timeToMins(lastFeed.time) + gap * 60);
+                document.getElementById('next-milk-badge').textContent = night ? `🌙 Gap Noche (${gap}h)` : `☀️ Gap Día (${gap}h)`;
+            } else {
+                document.getElementById('next-milk-time').textContent = '--:--';
+                document.getElementById('next-milk-badge').textContent = `Gap Día (${s.dayMilkGap}h)`;
+            }
+
+            // Verificar si hay siesta en curso
+            const openNapIdx = day.naps.findIndex(n => !n.end);
+            const banner = document.getElementById('ongoing-nap-container');
+            if (openNapIdx !== -1) {
+                banner.classList.remove('hidden');
+                document.getElementById('ongoing-nap-start').textContent = day.naps[openNapIdx].start;
+                document.getElementById('next-nap-time').textContent = 'Durmiendo';
+                document.getElementById('next-nap-badge').textContent = 'En curso';
+            } else {
+                banner.classList.add('hidden');
+                const completedNaps = day.naps.filter(n => n.end);
+                const lastNap = completedNaps[completedNaps.length - 1];
+                if (lastNap) {
+                    const night = isNightTime(lastNap.end, s);
+                    const gap = night ? s.nightNapGap : s.dayNapGap;
+                    document.getElementById('next-nap-time').textContent = minsToTime(timeToMins(lastNap.end) + gap * 60);
+                    document.getElementById('next-nap-badge').textContent = night ? `🌙 Gap Noche (${gap}h)` : `☀️ Gap Día (${gap}h)`;
+                } else {
+                    document.getElementById('next-nap-time').textContent = '--:--';
+                    document.getElementById('next-nap-badge').textContent = `Gap Día (${s.dayNapGap}h)`;
+                }
+            }
+
+            // Lista del día
+            const listEl = document.getElementById('today-list');
+            let html = '';
+            day.feeds.forEach((f, idx) => {
+                html += `<div class="today-item">
+                    <span>🍼 <strong>${f.time}</strong> • ${f.type}</span>
+                    <button onclick="deleteFeed(${idx})">Borrar</button>
+                </div>`;
+            });
+            day.naps.forEach((n, idx) => {
+                if (n.end) {
+                    html += `<div class="today-item">
+                        <span>☁️ <strong>${n.start} a ${n.end}</strong> • Siesta</span>
+                        <button onclick="deleteNap(${idx})">Borrar</button>
+                    </div>`;
+                } else {
+                    html += `<div class="today-item">
+                        <span>😴 <strong>Inició ${n.start}</strong> • Durmiendo...</span>
+                        <button onclick="openFinishNapModal(${idx})">Poner Fin</button>
+                    </div>`;
+                }
+            });
+            listEl.innerHTML = html || `<p style="color:var(--text-muted); text-align:center; margin:8px 0;">Sin registros hoy para ${state.activeChild}.</p>`;
+        }
+
+        function deleteFeed(idx) {
+            getActiveProfile().days[todayISO].feeds.splice(idx, 1);
+            saveState();
+        }
+        function deleteNap(idx) {
+            getActiveProfile().days[todayISO].naps.splice(idx, 1);
+            saveState();
+        }
+
+        function nowHHMM() {
+            return new Date().toTimeString().slice(0, 5);
+        }
+
+        function openMilkModal() {
+            selectMilkType('Leche Materna');
+            document.getElementById('input-milk-time').value = nowHHMM();
+            document.getElementById('modal-milk').classList.remove('hidden');
+        }
+
+        function selectMilkType(type) {
+            currentMilkType = type;
+            document.getElementById('btn-milk-breast').classList.toggle('active', type === 'Leche Materna');
+            document.getElementById('btn-milk-formula').classList.toggle('active', type === 'Fórmula');
+        }
+
+        function confirmMilk() {
+            const t = document.getElementById('input-milk-time').value;
+            if (!t) return;
+            const day = ensureDay(getActiveProfile(), todayISO);
+            day.feeds.push({ time: t, type: currentMilkType });
+            day.feeds.sort((a, b) => a.time.localeCompare(b.time));
+            closeModals();
+            saveState();
+        }
+
+        function openNapModal() {
+            finishingNapIndex = null;
+            document.getElementById('nap-modal-title').textContent = '☁️ Registrar Siesta';
+            document.getElementById('nap-mode-selector').classList.remove('hidden');
+            setNapMode('startOnly');
+            document.getElementById('input-nap-start').value = nowHHMM();
+            document.getElementById('input-nap-end').value = nowHHMM();
+            document.getElementById('modal-nap').classList.remove('hidden');
+        }
+
+        function setNapMode(mode) {
+            currentNapMode = mode;
+            document.getElementById('btn-nap-start-only').classList.toggle('active', mode === 'startOnly');
+            document.getElementById('btn-nap-complete').classList.toggle('active', mode === 'complete');
+            document.getElementById('nap-start-wrapper').classList.remove('hidden');
+            document.getElementById('nap-end-wrapper').classList.toggle('hidden', mode === 'startOnly');
+        }
+
+        function openFinishNapModal(idx) {
+            const day = ensureDay(getActiveProfile(), todayISO);
+            const targetIdx = idx !== undefined ? idx : day.naps.findIndex(n => !n.end);
+            if (targetIdx === -1) return;
+            finishingNapIndex = targetIdx;
+            document.getElementById('nap-modal-title').textContent = '☀️ Hora en que Despertó';
+            document.getElementById('nap-mode-selector').classList.add('hidden');
+            document.getElementById('nap-start-wrapper').classList.add('hidden');
+            document.getElementById('nap-end-wrapper').classList.remove('hidden');
+            document.getElementById('input-nap-end').value = nowHHMM();
+            document.getElementById('modal-nap').classList.remove('hidden');
+        }
+
+        function confirmNap() {
+            const day = ensureDay(getActiveProfile(), todayISO);
+            if (finishingNapIndex !== null) {
+                day.naps[finishingNapIndex].end = document.getElementById('input-nap-end').value;
+            } else if (currentNapMode === 'startOnly') {
+                day.naps.push({ start: document.getElementById('input-nap-start').value, end: null });
+            } else {
+                day.naps.push({
+                    start: document.getElementById('input-nap-start').value,
+                    end: document.getElementById('input-nap-end').value
+                });
+            }
+            day.naps.sort((a, b) => a.start.localeCompare(b.start));
+            closeModals();
+            saveState();
+        }
+
+        function closeModals() {
+            document.getElementById('modal-milk').classList.add('hidden');
+            document.getElementById('modal-nap').classList.add('hidden');
+            document.getElementById('modal-profile').classList.add('hidden');
+        }
+
+        const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+        function initCalendarSelectors() {
+            const mSel = document.getElementById('cal-month-select');
+            const ySel = document.getElementById('cal-year-select');
+            if (!mSel.options.length) {
+                monthNames.forEach((m, idx) => {
+                    const opt = document.createElement('option');
+                    opt.value = idx;
+                    opt.textContent = m;
+                    mSel.appendChild(opt);
+                });
+                for (let y = 2024; y <= 2030; y++) {
+                    const opt = document.createElement('option');
+                    opt.value = y;
+                    opt.textContent = y;
+                    ySel.appendChild(opt);
+                }
+            }
+            mSel.value = calMonth;
+            ySel.value = calYear;
+        }
+
+        function onMonthYearSelect() {
+            calMonth = parseInt(document.getElementById('cal-month-select').value, 10);
+            calYear = parseInt(document.getElementById('cal-year-select').value, 10);
+            renderCalendar();
+        }
+
+        function changeMonth(delta) {
+            calMonth += delta;
+            if (calMonth < 0) { calMonth = 11; calYear--; }
+            if (calMonth > 11) { calMonth = 0; calYear++; }
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            initCalendarSelectors();
+            const grid = document.getElementById('cal-grid-body');
+            grid.innerHTML = '';
+            const firstDay = new Date(calYear, calMonth, 1).getDay();
+            const offset = (firstDay + 6) % 7;
+            const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+            const prof = getActiveProfile();
+
+            for (let i = 0; i < offset; i++) {
+                grid.appendChild(document.createElement('div'));
+            }
+
+            for (let d = 1; d <= daysInMonth; d++) {
+                const iso = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                const dayData = prof.days[iso];
+                const hasData = dayData && (dayData.feeds.length > 0 || dayData.naps.length > 0);
+                const cell = document.createElement('div');
+                cell.className = `cal-cell ${hasData ? 'has-data' : ''} ${iso === selectedCalDate ? 'selected' : ''}`;
+                cell.innerHTML = `<span>${d}</span>${hasData ? '<div class="cal-dot"></div>' : ''}`;
+                cell.onclick = () => {
+                    selectedCalDate = iso;
+                    renderCalendar();
+                };
+                grid.appendChild(cell);
+            }
+
+            // Vista Horaria Estilo Google Calendar (36px por hora)
+            document.getElementById('selected-cal-date-label').textContent = formatDDMM(selectedCalDate);
+            const timeline = document.getElementById('gcal-timeline');
+            timeline.innerHTML = '';
+            for (let h = 0; h < 24; h++) {
+                const row = document.createElement('div');
+                row.className = 'gcal-hour-row';
+                row.textContent = `${String(h).padStart(2,'0')}:00`;
+                timeline.appendChild(row);
+            }
+
+            const selData = prof.days[selectedCalDate] || { feeds: [], naps: [] };
+            selData.feeds.forEach(f => {
+                const topPx = (timeToMins(f.time) / 60) * 36;
+                const ev = document.createElement('div');
+                ev.className = 'gcal-event milk';
+                ev.style.top = `${topPx}px`;
+                ev.textContent = `🍼 ${f.time} • ${f.type}`;
+                timeline.appendChild(ev);
+            });
+            selData.naps.forEach(n => {
+                const startM = timeToMins(n.start);
+                const endM = n.end ? timeToMins(n.end) : startM + 45;
+                const durationM = endM >= startM ? (endM - startM) : (1440 - startM + endM);
+                const topPx = (startM / 60) * 36;
+                const heightPx = Math.max(26, (durationM / 60) * 36);
+                const ev = document.createElement('div');
+                ev.className = 'gcal-event nap';
+                ev.style.top = `${topPx}px`;
+                ev.style.height = `${heightPx}px`;
+                ev.textContent = `☁️ Siesta (${n.start} - ${n.end || 'En curso'})`;
+                timeline.appendChild(ev);
+            });
+        }
+
+        function setStatsRange(days) {
+            statsRangeDays = days;
+            [7, 30, 365].forEach(d => {
+                document.getElementById(`range-${d}`).classList.toggle('active', d === days);
+            });
+            renderStats();
+        }
+
+        function drawLineChart(svgId, labels, values, strokeColor, unit) {
+            const svg = document.getElementById(svgId);
+            if (!values.length) {
+                svg.innerHTML = '<text x="170" y="85" text-anchor="middle" fill="#8C8275" font-size="13">Agrega registros para ver la línea de tendencia</text>';
+                return;
+            }
+            const maxV = Math.max(...values, 4);
+            const minV = 0;
+            const w = 290, h = 110, padL = 25, padT = 22;
+            const pts = values.map((v, i) => {
+                const x = padL + (values.length === 1 ? w / 2 : (i / (values.length - 1)) * w);
+                const y = padT + h - ((v - minV) / (maxV - minV)) * h;
+                return { x, y, v, label: labels[i] };
+            });
+
+            const polyPoints = pts.map(p => `${p.x},${p.y}`).join(' ');
+            let inner = `<polyline fill="none" stroke="${strokeColor}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" points="${polyPoints}" />`;
+            pts.forEach(p => {
+                inner += `<circle cx="${p.x}" cy="${p.y}" r="5" fill="${strokeColor}" />`;
+                inner += `<text x="${p.x}" y="${p.y - 8}" text-anchor="middle" font-size="10" fill="#4A4238" font-weight="bold">${p.v}${unit}</text>`;
+                inner += `<text x="${p.x}" y="${padT + h + 20}" text-anchor="middle" font-size="10" fill="#8C8275">${p.label}</text>`;
+            });
+            svg.innerHTML = inner;
+        }
+
+        function renderStats() {
+            const prof = getActiveProfile();
+            const allKeys = Object.keys(prof.days)
+                .filter(k => prof.days[k].feeds.length > 0 || prof.days[k].naps.length > 0)
+                .sort()
+                .slice(-statsRangeDays);
+
+            const labels = allKeys.map(formatDDMM);
+
+            const avgMilkGaps = allKeys.map(k => {
+                const feeds = prof.days[k].feeds;
+                if (feeds.length < 2) return prof.settings.dayMilkGap;
+                let diffs = [];
+                for (let i = 1; i < feeds.length; i++) {
+                    diffs.push((timeToMins(feeds[i].time) - timeToMins(feeds[i-1].time)) / 60);
+                }
+                return Number((diffs.reduce((a,b)=>a+b,0) / diffs.length).toFixed(1));
+            });
+
+            const totalSleepHours = allKeys.map(k => {
+                const naps = prof.days[k].naps.filter(n => n.end);
+                const mins = naps.reduce((acc, n) => {
+                    const s = timeToMins(n.start);
+                    const e = timeToMins(n.end);
+                    return acc + (e >= s ? (e - s) : (1440 - s + e));
+                }, 0);
+                return Number((mins / 60).toFixed(1));
+            });
+
+            drawLineChart('chart-milk-gap', labels, avgMilkGaps, '#C98A8E', 'h');
+            drawLineChart('chart-sleep-hours', labels, totalSleepHours, '#6E9483', 'h');
+        }
+
+        function loadSettingsInputs() {
+            const s = getActiveProfile().settings;
+            document.getElementById('set-day-milk').value = s.dayMilkGap;
+            document.getElementById('set-day-nap').value = s.dayNapGap;
+            document.getElementById('set-night-start').value = s.nightStart;
+            document.getElementById('set-night-end').value = s.nightEnd;
+            document.getElementById('set-night-milk').value = s.nightMilkGap;
+            document.getElementById('set-night-nap').value = s.nightNapGap;
+        }
+
+        function saveSettings() {
+            const s = getActiveProfile().settings;
+            s.dayMilkGap = parseFloat(document.getElementById('set-day-milk').value) || 3;
+            s.dayNapGap = parseFloat(document.getElementById('set-day-nap').value) || 2;
+            s.nightStart = document.getElementById('set-night-start').value || '21:00';
+            s.nightEnd = document.getElementById('set-night-end').value || '07:00';
+            s.nightMilkGap = parseFloat(document.getElementById('set-night-milk').value) || 5;
+            s.nightNapGap = parseFloat(document.getElementById('set-night-nap').value) || 4;
+            saveState();
+        }
+
+        function switchTab(tab) {
+            ['home', 'calendar', 'stats', 'settings'].forEach(t => {
+                document.getElementById(`view-${t}`).classList.toggle('hidden', t !== tab);
+                document.getElementById(`tab-${t}`).classList.toggle('active', t === tab);
+            });
+            renderAll();
+            if (tab === 'calendar') {
+                setTimeout(() => {
+                    const box = document.getElementById('gcal-scroll-box');
+                    if (box) box.scrollTop = 7 * 36; // Desplazar a las 07:00 AM por comodidad
+                }, 50);
+            }
+        }
+
+        function renderAll() {
+            renderProfiles();
+            renderHome();
+            renderCalendar();
+            renderStats();
+            loadSettingsInputs();
+        }
+
+        renderAll();
+    </script>
+</body>
+</html>
