@@ -8,7 +8,6 @@ maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Mis Bebés">
 <title>Mis Bebés - Rutina</title>
-<!-- Generador automático de ícono PNG real para iPhone -->
 <script>
 (function() {
 try {
@@ -53,6 +52,10 @@ box-sizing: border-box;
 font-family: -apple-system, BlinkMacSystemFont,
 Roboto, sans-serif;
 -webkit-tap-highlight-color: transparent;
+"SF Pro Rounded"
+,
+"Segoe UI"
+,
 }
 body {
 background-color: var(--bg-cream);
@@ -63,304 +66,116 @@ max-width: 480px;
 margin-left: auto;
 margin-right: auto;
 user-select: none;
-"SF Pro Rounded"
-,
-"Segoe UI"
-,
 }
-/* Barra Superior de Perfiles */
 .profile-bar {
-display: flex;
-gap: 8px;
-overflow-x: auto;
-padding-bottom: 10px;
-margin-bottom: 12px;
 scrollbar-width: none;
+display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 12px;
 }
 .profile-bar::-webkit-scrollbar { display: none; }
 .profile-pill {
-background: var(--card-beige);
-color: var(--text-muted);
-border: 2px solid transparent;
-padding: 10px 16px;
-border-radius: 999px;
-font-size: 15px;
-font-weight: 600;
-white-space: nowrap;
-cursor: pointer;
+background: var(--card-beige); color: var(--text-muted); border: 2px solid transparent;
+padding: 10px 16px; border-radius: 999px; font-size: 15px; font-weight: 600;
+white-space: nowrap; cursor: pointer;
 }
-.profile-pill.active {
-background: var(--pale-pink);
-color: var(--text-dark);
-border-color: var(--deep-pink);
-}
-.profile-pill.add-btn {
-background: var(--white);
-border: 2px dashed var(--deep-pink);
-color: var(--deep-pink);
-}
-/* Tarjetas de Proyección */
-.predictions-grid {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 12px;
-margin-bottom: 16px;
-}
+.profile-pill.active { background: var(--pale-pink); color: var(--text-dark); border-color:
+var(--deep-pink); }
+color: var(--deep-pink); }
+.profile-pill.add-btn { background: var(--white); border: 2px dashed var(--deep-pink);
+.predictions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+margin-bottom: 16px; }
 .pred-box {
-background: var(--pale-pink);
-padding: 16px 10px;
-border-radius: 24px;
-text-align: center;
-box-shadow: 0 4px 14px rgba(201, 138, 142, 0.18);
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
+background: var(--pale-pink); padding: 16px 10px; border-radius: 24px; text-align:
+center;
+box-shadow: 0 4px 14px rgba(201, 138, 142, 0.18); display: flex; flex-direction:
+column; justify-content: center; align-items: center;
 }
-.pred-box.nap {
-background: var(--pastel-sage);
-box-shadow: 0 4px 14px rgba(110, 148, 131, 0.18);
-}
-.pred-box small {
-font-size: 11px;
-font-weight: 700;
-text-transform: uppercase;
-letter-spacing: 0.4px;
-display: block;
-opacity: 0.85;
-}
-.pred-box strong {
-font-size: 27px;
-display: block;
-margin: 5px 0;
-line-height: 1.1;
-}
-.pred-box strong.range-text {
-font-size: 20px;
-margin: 8px 0;
-}
-.pred-box .mode-badge {
-font-size: 11px;
-background: rgba(255,255,255,0.7);
-padding: 3px 8px;
-border-radius: 10px;
-font-weight: 600;
-}
-/* Banner de Siesta en Curso */
+.pred-box.nap { background: var(--pastel-sage); box-shadow: 0 4px 14px rgba(110,
+148, 131, 0.18); }
+.pred-box small { font-size: 11px; font-weight: 700; text-transform: uppercase;
+letter-spacing: 0.4px; display: block; opacity: 0.85; }
+.pred-box strong { font-size: 27px; display: block; margin: 5px 0; line-height: 1.1; }
+.pred-box strong.range-text { font-size: 20px; margin: 8px 0; }
+.pred-box .mode-badge { font-size: 11px; background: rgba(255,255,255,0.7); padding:
+3px 8px; border-radius: 10px; font-weight: 600; }
 .ongoing-nap-banner {
-background: var(--night-lavender);
-padding: 16px;
-border-radius: 22px;
+background: var(--night-lavender); padding: 16px; border-radius: 22px;
 margin-bottom: 16px;
-display: flex;
-flex-direction: column;
-gap: 10px;
-border: 2px solid #B5A8D1;
+display: flex; flex-direction: column; gap: 10px; border: 2px solid #B5A8D1;
 }
 .ongoing-nap-banner button {
-background: var(--text-dark);
-color: var(--white);
-border: none;
-padding: 16px;
-border-radius: 16px;
-font-size: 17px;
-font-weight: 700;
-cursor: pointer;
+background: var(--text-dark); color: var(--white); border: none; padding: 16px;
+border-radius: 16px; font-size: 17px; font-weight: 700; cursor: pointer;
 }
-/* Botones Grandes para 1 Mano */
-.big-actions {
-display: flex;
-flex-direction: column;
-gap: 11px;
-margin-bottom: 20px;
-}
+.big-actions { display: flex; flex-direction: column; gap: 11px; margin-bottom: 20px; }
 .big-btn {
-width: 100%;
-padding: 20px 18px;
-border-radius: 24px;
-border: none;
-font-size: 19px;
-font-weight: 700;
-color: var(--text-dark);
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 10px;
-cursor: pointer;
-box-shadow: 0 5px 14px rgba(0,0,0,0.06);
-transition: transform 0.1s;
+width: 100%; padding: 20px 18px; border-radius: 24px; border: none; font-size: 19px;
+font-weight: 700; color: var(--text-dark);
+display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer;
+box-shadow: 0 5px 14px rgba(0,0,0,0.06); transition: transform 0.1s;
 }
 .big-btn:active { transform: scale(0.98); }
-.big-btn.milk {
-background: var(--pale-pink);
-border: 2px solid var(--deep-pink);
-}
-.big-btn.nap {
-background: var(--pastel-sage);
-border: 2px solid var(--deep-sage);
-}
-.big-btn.food {
-background: var(--pastel-peach);
-border: 2px solid var(--deep-peach);
-}
-/* Tarjetas y Contenedores */
-.card {
-background: var(--card-beige);
-padding: 18px;
-border-radius: 24px;
-margin-bottom: 16px;
-}
-.card h3 {
-margin: 0 0 12px 0;
-font-size: 17px;
-}
-/* Ítems en Hoy */
+.big-btn.milk { background: var(--pale-pink); border: 2px solid var(--deep-pink); }
+.big-btn.nap { background: var(--pastel-sage); border: 2px solid var(--deep-sage); }
+.big-btn.food { background: var(--pastel-peach); border: 2px solid var(--deep-peach); }
+.card { background: var(--card-beige); padding: 18px; border-radius: 24px;
+margin-bottom: 16px; }
+.card h3 { margin: 0 0 12px 0; font-size: 17px; }
 .today-item {
-background: var(--white);
-padding: 14px 16px;
-border-radius: 16px;
-margin-bottom: 10px;
-display: flex;
-justify-content: space-between;
-align-items: center;
-gap: 10px;
-cursor: pointer;
-border-left: 5px solid transparent;
-transition: transform 0.1s;
+background: var(--white); padding: 14px 16px; border-radius: 16px; margin-bottom:
+10px;
+display: flex; justify-content: space-between; align-items: center; gap: 10px; cursor:
+pointer; border-left: 5px solid transparent;
 }
-.today-item:active { transform: scale(0.99); }
 .today-item.type-feed { border-left-color: var(--deep-pink); }
 .today-item.type-nap { border-left-color: var(--deep-sage); }
 .today-item.type-food { border-left-color: var(--deep-peach); }
 .item-main { flex: 1; min-width: 0; }
 .item-title { font-size: 15px; margin-bottom: 2px; }
-.item-comment-preview {
-font-size: 12px;
-color: var(--text-muted);
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-margin-top: 3px;
-font-style: italic;
-}
+.item-comment-preview { font-size: 12px; color: var(--text-muted); white-space: nowrap;
+overflow: hidden; text-overflow: ellipsis; margin-top: 3px; font-style: italic; }
 .item-chevron { color: var(--text-muted); font-size: 18px; font-weight: bold; }
-.finish-inline-btn {
-background: var(--pastel-sage);
-border: 1px solid var(--deep-sage);
-padding: 8px 12px;
-border-radius: 10px;
-font-weight: 700;
-font-size: 13px;
-color: var(--text-dark);
-cursor: pointer;
-white-space: nowrap;
-}
-/* Calendario Mensual */
-.cal-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 12px;
-gap: 8px;
-}
-.cal-nav-btn {
-background: var(--white);
-border: none;
-width: 44px;
-height: 44px;
-border-radius: 14px;
-font-size: 20px;
-font-weight: bold;
-color: var(--text-dark);
-cursor: pointer;
+.finish-inline-btn { background: var(--pastel-sage); border: 1px solid var(--deep-sage);
+padding: 8px 12px; border-radius: 10px; font-weight: 700; font-size: 13px; color:
+var(--text-dark); cursor: pointer; }
+.cal-header { display: flex; justify-content: space-between; align-items: center;
+margin-bottom: 12px; gap: 8px; }
+.cal-nav-btn { background: var(--white); border: none; width: 44px; height: 44px;
+border-radius: 14px; font-size: 20px; font-weight: bold; color: var(--text-dark); cursor: pointer;
 }
 .cal-select-group { display: flex; gap: 6px; }
-.cal-select {
-background: var(--white);
-border: 1px solid var(--deep-pink);
-padding: 8px 10px;
-border-radius: 12px;
-font-size: 15px;
-font-weight: 700;
-color: var(--text-dark);
-outline: none;
-}
-.cal-grid {
-display: grid;
-grid-template-columns: repeat(7, 1fr);
-gap: 6px;
-text-align: center;
-}
-.cal-day-name {
-font-size: 12px;
-color: var(--text-muted);
-font-weight: 600;
-padding-bottom: 6px;
-}
-.cal-cell {
-aspect-ratio: 1;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-border-radius: 14px;
-background: var(--white);
-font-size: 15px;
-font-weight: 600;
-cursor: pointer;
-}
+.cal-select { background: var(--white); border: 1px solid var(--deep-pink); padding: 8px
+10px; border-radius: 12px; font-size: 15px; font-weight: 700; color: var(--text-dark); outline:
+none; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align:
+center; }
+.cal-day-name { font-size: 12px; color: var(--text-muted); font-weight: 600;
+padding-bottom: 6px; }
+.cal-cell { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center;
+justify-content: center; border-radius: 14px; background: var(--white); font-size: 15px;
+font-weight: 600; cursor: pointer; }
 .cal-cell.has-data { background: var(--pale-pink); }
 .cal-cell.selected { outline: 3px solid var(--text-dark); }
-.cal-dot {
-width: 5px; height: 5px;
-border-radius: 50%;
-background: var(--deep-pink);
-margin-top: 2px;
-}
-/* Grilla Horaria Estilo Google Calendar */
-.gcal-timeline {
-position: relative;
-background: var(--white);
-border-radius: 18px;
-height: 500px;
-overflow-y: auto;
-border: 1px solid rgba(0,0,0,0.06);
-}
+.cal-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--deep-pink);
+margin-top: 2px; }
+.gcal-timeline { position: relative; background: var(--white); border-radius: 18px; height:
+500px; overflow-y: auto; border: 1px solid rgba(0,0,0,0.06); }
 .gcal-canvas { position: relative; height: 864px; }
-.gcal-hour-row {
-height: 36px;
-border-bottom: 1px solid #F3EFEA;
-display: flex;
-align-items: flex-start;
-padding-left: 8px;
-padding-top: 2px;
-font-size: 11px;
-color: var(--text-muted);
-}
-.gcal-event {
-position: absolute;
-left: 58px; right: 12px;
-border-radius: 8px;
-padding: 3px 10px;
-font-size: 12px; font-weight: 600;
-overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
-box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-display: flex; align-items: center;
-cursor: pointer;
-}
+.gcal-hour-row { height: 36px; border-bottom: 1px solid #F3EFEA; display: flex;
+align-items: flex-start; padding-left: 8px; padding-top: 2px; font-size: 11px; color:
+var(--text-muted); }
+.gcal-event { position: absolute; left: 58px; right: 12px; border-radius: 8px; padding: 3px
+10px; font-size: 12px; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow:
+ellipsis; box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; align-items: center; cursor:
+pointer; }
 .gcal-event.milk { background: var(--pale-pink); border-left: 4px solid var(--deep-pink);
 height: 26px; z-index: 3; }
 .gcal-event.food { background: var(--pastel-peach); border-left: 4px solid
 var(--deep-peach); height: 26px; z-index: 4; }
 .gcal-event.nap { background: var(--pastel-sage); border-left: 4px solid
-var(--deep-sage); z-index: 2; }
-/* Estadísticas */
+var(--deep-sage); height: 26px; z-index: 2; }
 .range-pills { display: flex; gap: 8px; margin-bottom: 14px; }
-.range-pill {
-flex: 1; padding: 12px; border-radius: 14px; border: none;
-background: var(--card-beige); font-weight: 600; color: var(--text-dark); cursor:
-pointer;
-}
+.range-pill { flex: 1; padding: 12px; border-radius: 14px; border: none; background:
+var(--card-beige); font-weight: 600; color: var(--text-dark); cursor: pointer; }
 .range-pill.active { background: var(--deep-pink); color: var(--white); }
 .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;
 }
@@ -371,139 +186,81 @@ center; border: 1px solid var(--card-beige); }
 .kpi-card strong { font-size: 20px; color: var(--text-dark); }
 svg.line-chart { width: 100%; height: 185px; background: var(--white); border-radius:
 16px; padding: 10px; }
-/* Ajustes Estilizados (Bloques Día y Noche) */
-.settings-block {
-background: var(--white);
-border-radius: 20px;
-padding: 16px;
-margin-bottom: 14px;
-border: 1px solid rgba(0,0,0,0.04);
-}
-.settings-block h4 {
-margin: 0 0 12px 0;
-font-size: 16px;
-color: var(--text-dark);
-border-bottom: 2px solid var(--card-beige);
-padding-bottom: 6px;
-}
-.setting-item {
-margin-bottom: 12px;
-padding-bottom: 10px;
-border-bottom: 1px solid #F9F6F0;
-}
+.settings-block { background: var(--white); border-radius: 20px; padding: 16px;
+margin-bottom: 14px; border: 1px solid rgba(0,0,0,0.04); }
+.settings-block h4 { margin: 0 0 12px 0; font-size: 16px; color: var(--text-dark);
+border-bottom: 2px solid var(--card-beige); padding-bottom: 6px; }
+.setting-item { margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid
+#F9F6F0; }
 .setting-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-.setting-label-row {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 4px;
-}
+.setting-label-row { display: flex; justify-content: space-between; align-items: center;
+margin-bottom: 4px; }
 .setting-label-row span { font-size: 14px; font-weight: 600; color: var(--text-dark); }
-.setting-label-row input {
-width: 100px;
-padding: 8px;
-border-radius: 10px;
-border: 1px solid var(--deep-pink);
-font-size: 15px; font-weight: 700;
-text-align: center; background: var(--bg-cream); color: var(--text-dark);
-}
-.setting-desc {
-font-size: 12px;
-color: var(--text-muted);
-line-height: 1.35;
-}
-/* Modales */
-.modal-backdrop {
-position: fixed; inset: 0; background: rgba(0,0,0,0.45);
-display: flex; align-items: flex-end; justify-content: center; z-index: 100;
-}
-.bottom-sheet {
-background: var(--bg-cream); width: 100%; max-width: 480px; max-height: 90vh;
-overflow-y: auto; border-radius: 28px 28px 0 0; padding: 22px 20px 34px 20px;
-box-shadow: 0 -8px 30px rgba(0,0,0,0.18);
-}
+.setting-label-row input { width: 100px; padding: 8px; border-radius: 10px; border: 1px
+solid var(--deep-pink); font-size: 15px; font-weight: 700; text-align: center; background:
+var(--bg-cream); color: var(--text-dark); }
+.setting-desc { font-size: 12px; color: var(--text-muted); line-height: 1.35; }
+.modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: flex;
+align-items: flex-end; justify-content: center; z-index: 100; }
+.bottom-sheet { background: var(--bg-cream); width: 100%; max-width: 480px;
+max-height: 90vh; overflow-y: auto; border-radius: 28px 28px 0 0; padding: 22px 20px 34px
+20px; box-shadow: 0 -8px 30px rgba(0,0,0,0.18); }
 .sheet-header { display: flex; justify-content: space-between; align-items: center;
 margin-bottom: 14px; }
 .sheet-title { font-size: 20px; font-weight: 700; margin: 0; text-align: center; flex: 1; }
-.icon-btn {
-background: var(--card-beige); border: none; width: 42px; height: 42px;
+.icon-btn { background: var(--card-beige); border: none; width: 42px; height: 42px;
 border-radius: 14px; font-size: 18px; cursor: pointer; display: flex; align-items: center;
-justify-content: center;
-}
+justify-content: center; }
 .big-segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
 margin-bottom: 14px; }
 .unit-pills { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom:
 14px; }
-.unit-btn {
-cursor: pointer;
-padding: 12px 4px; border-radius: 12px; border: 2px solid var(--pastel-peach);
-background: var(--white); font-size: 14px; font-weight: 700; color: var(--text-muted);
-}
+.unit-btn { padding: 12px 4px; border-radius: 12px; border: 2px solid
+var(--pastel-peach); background: var(--white); font-size: 14px; font-weight: 700; color:
+var(--text-muted); cursor: pointer; }
 .unit-btn.active { background: var(--pastel-peach); border-color: var(--deep-peach);
 color: var(--text-dark); }
-.seg-btn {
-padding: 16px 10px; border-radius: 18px; border: 2px solid var(--pale-pink);
-background: var(--white); font-size: 15px; font-weight: 700; color: var(--text-muted);
-cursor: pointer;
-}
+.seg-btn { padding: 16px 10px; border-radius: 18px; border: 2px solid var(--pale-pink);
+background: var(--white); font-size: 15px; font-weight: 700; color: var(--text-muted); cursor:
+pointer; }
 .seg-btn.active { background: var(--pale-pink); border-color: var(--deep-pink); color:
 var(--text-dark); }
 .field-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color:
 var(--text-muted); }
-.big-input {
-width: 100%; padding: 14px; font-size: 19px; font-weight: 700; text-align: center;
-border-radius: 16px; border: 2px solid var(--pale-pink); background: var(--white);
-color: var(--text-dark); margin-bottom: 14px; outline: none;
-}
-.comment-area {
-width: 100%; padding: 12px 14px; font-size: 15px; border-radius: 16px;
-border: 2px solid var(--card-beige); background: var(--white); color: var(--text-dark);
-min-height: 76px; resize: none; margin-bottom: 16px; outline: none;
-}
+.big-input { width: 100%; padding: 14px; font-size: 19px; font-weight: 700; text-align:
+center; border-radius: 16px; border: 2px solid var(--pale-pink); background: var(--white);
+color: var(--text-dark); margin-bottom: 14px; outline: none; }
+.comment-area { width: 100%; padding: 12px 14px; font-size: 15px; border-radius:
+16px; border: 2px solid var(--card-beige); background: var(--white); color: var(--text-dark);
+min-height: 76px; resize: none; margin-bottom: 16px; outline: none; }
 .detail-box { background: var(--white); padding: 16px; border-radius: 18px;
 margin-bottom: 14px; }
 .detail-row { display: flex; justify-content: space-between; padding: 8px 0;
 border-bottom: 1px solid #F3EFEA; font-size: 15px; }
 .detail-row:last-child { border-bottom: none; }
-.detail-comment-box {
-background: var(--white); padding: 16px; border-radius: 18px; margin-bottom: 16px;
-font-size: 15px; line-height: 1.45; white-space: pre-wrap; word-break: break-word;
-}
+.detail-comment-box { background: var(--white); padding: 16px; border-radius: 18px;
+margin-bottom: 16px; font-size: 15px; line-height: 1.45; white-space: pre-wrap; word-break:
+break-word; }
 .sheet-actions { display: flex; gap: 10px; }
-.btn-cancel {
-flex: 1; padding: 16px; border-radius: 18px; border: none;
-background: var(--card-beige); font-size: 16px; font-weight: 700; color:
-var(--text-dark); cursor: pointer;
-}
-.btn-save {
-cursor: pointer;
-flex: 2; padding: 16px; border-radius: 18px; border: none;
-background: var(--deep-pink); font-size: 16px; font-weight: 700; color: var(--white);
-}
-.btn-delete {
-padding: 16px; border-radius: 18px; border: none;
-background: #F9E2E2; color: #B34747; font-size: 15px; font-weight: 700; cursor:
-pointer;
-}
-/* Barra de Navegación */
+.btn-cancel { flex: 1; padding: 16px; border-radius: 18px; border: none; background:
+var(--card-beige); font-size: 16px; font-weight: 700; color: var(--text-dark); cursor: pointer; }
+.btn-save { flex: 2; padding: 16px; border-radius: 18px; border: none; background:
+var(--deep-pink); font-size: 16px; font-weight: 700; color: var(--white); cursor: pointer; }
+.btn-delete { padding: 16px; border-radius: 18px; border: none; background: #F9E2E2;
+color: #B34747; font-size: 15px; font-weight: 700; cursor: pointer; }
 .tab-bar {
 position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-beige);
 display: grid; grid-template-columns: repeat(4, 1fr); padding: 10px 8px 24px 8px;
 border-top: 1px solid rgba(0,0,0,0.06); z-index: 50; max-width: 480px; margin: 0 auto;
 }
-.tab-btn {
-background: none; border: none; padding: 10px 4px; font-size: 13px; font-weight:
-700;
-color: var(--text-muted); border-radius: 14px; cursor: pointer;
-}
+.tab-btn { background: none; border: none; padding: 10px 4px; font-size: 13px;
+font-weight: 700; color: var(--text-muted); border-radius: 14px; cursor: pointer; }
+.tab-btn.active { background: var(--pale-pink); color: var(--text-dark); }
+.hidden { display: none !important; }
 </style>
 </head>
 <body>
-.tab-btn.active { background: var(--pale-pink); color: var(--text-dark); }
-.hidden { display: none !important; }
-<!-- Selector Superior de Perfiles -->
 <div class="profile-bar" id="profile-bar"></div>
-<!-- PESTAÑA 1: HOY -->
 <div id="view-home">
 <div class="predictions-grid">
 <div class="pred-box">
@@ -517,7 +274,6 @@ color: var(--text-muted); border-radius: 14px; cursor: pointer;
 <span class="mode-badge" id="next-nap-badge">Gap Día</span>
 </div>
 </div>
-<!-- Banner siesta en curso -->
 <div id="ongoing-nap-container" class="ongoing-nap-banner hidden">
 <div style="display:flex; justify-content:space-between; align-items:center;">
 <span>😴 <strong>Durmiendo ahora</strong> (inició <span
@@ -525,7 +281,6 @@ id="ongoing-nap-start"></span>)</span>
 </div>
 <button onclick="openFinishNapModal()">☀ Despertó (Registrar Fin)</button>
 </div>
-<!-- Botones Grandes -->
 <div class="big-actions">
 <button class="big-btn milk" onclick="openMilkModal()">🍼 Registrar
 Leche</button>
@@ -534,13 +289,11 @@ Siesta</button>
 <button class="big-btn food" onclick="openFoodModal()">🥄 Registrar
 Comida</button>
 </div>
-<!-- Lista del día -->
 <div class="card">
 <h3>📋 Lo que lleva hoy (<span id="today-date-title"></span>)</h3>
 <div id="today-list"></div>
 </div>
 </div>
-<!-- PESTAÑA 2: CALENDARIO -->
 <div id="view-calendar" class="hidden">
 <div class="card">
 <div class="cal-header">
@@ -569,7 +322,6 @@ onchange="onMonthYearSelect()"></select>
 </div>
 </div>
 </div>
-<!-- PESTAÑA 3: ESTADÍSTICAS -->
 <div id="view-stats" class="hidden">
 <div class="range-pills">
 <button class="range-pill active" id="range-7" onclick="setStatsRange(7)">Última
@@ -602,9 +354,7 @@ id="kpi-food-count">0</strong></div>
 <svg class="line-chart" id="chart-food-amount" viewBox="0 0 340 165"></svg>
 </div>
 </div>
-<!-- PESTAÑA 4: AJUSTES REESTRUCTURADOS EN 2 BLOQUES (DÍA Y NOCHE) -->
 <div id="view-settings" class="hidden">
-<!-- BLOQUE DÍA -->
 <div class="settings-block">
 <h4>☀ Ajustes Día</h4>
 <div class="setting-item">
@@ -613,8 +363,8 @@ id="kpi-food-count">0</strong></div>
 <input type="number" step="0.5" min="0.5" max="12" id="set-day-nap"
 onchange="saveSettings()">
 </div>
-<div class="setting-desc">Tiempo máximo que pasa despierto antes de que le
-toque su próxima siesta diurna.
+<div class="setting-desc">Tiempo máximo que pasa despierto antes de su
+próxima siesta diurna.
 </div>
 </div>
 <div class="setting-item">
@@ -623,8 +373,8 @@ toque su próxima siesta diurna.
 <input type="number" step="0.25" min="0.25" max="10" id="set-nap-min"
 onchange="saveSettings()">
 </div>
-<div class="setting-desc">Mínimo de horas que suele dormir en sus siestas de día
-(para el rango proyectado).
+<div class="setting-desc">Mínimo de horas que suele dormir en sus siestas de
+día.
 </div>
 </div>
 <div class="setting-item">
@@ -643,12 +393,11 @@ día.
 <input type="number" step="0.5" min="0.5" max="12" id="set-day-milk"
 onchange="saveSettings()">
 </div>
-<div class="setting-desc">Intervalo regular de tiempo entre una papa y la
-siguiente durante el día.
+<div class="setting-desc">Intervalo regular entre una papa y la siguiente durante
+el día.
 </div>
 </div>
 </div>
-<!-- BLOQUE NOCHE -->
 <div class="settings-block">
 <h4>🌙 Ajustes Noche</h4>
 <div class="setting-item">
@@ -656,8 +405,7 @@ siguiente durante el día.
 <span>Inicio horario nocturno</span>
 <input type="time" id="set-night-start" onchange="saveSettings()">
 </div>
-<div class="setting-desc">Hora en que comienza la noche y se activa el régimen
-nocturno.
+<div class="setting-desc">Hora en que comienza la noche.
 </div>
 </div>
 <div class="setting-item">
@@ -674,8 +422,7 @@ nocturno.
 <input type="number" step="0.25" min="0.25" max="12" id="set-night-nap-min"
 onchange="saveSettings()">
 </div>
-<div class="setting-desc">Mínimo de horas del ciclo de sueño nocturno (se
-resetea automáticamente al despertar).
+<div class="setting-desc">Mínimo de horas del ciclo de sueño nocturno.
 </div>
 </div>
 <div class="setting-item">
@@ -693,13 +440,12 @@ onchange="saveSettings()">
 <input type="number" step="0.5" min="0.5" max="14" id="set-night-milk"
 onchange="saveSettings()">
 </div>
-<div class="setting-desc">Intervalo de tiempo entre tomas de leche durante la
-noche.
+<div class="setting-desc">Intervalo entre tomas de leche durante la noche.
 </div>
 </div>
 </div>
 </div>
-<!-- MODAL 1: LECHE -->
+<!-- Modales -->
 <div id="modal-milk" class="modal-backdrop hidden">
 <div class="bottom-sheet">
 <h3 class="sheet-title" id="milk-modal-title">🍼 Registrar Toma de Leche</h3>
@@ -723,7 +469,6 @@ súper bien...
 </div>
 </div>
 </div>
-<!-- MODAL 2: SIESTA -->
 <div id="modal-nap" class="modal-backdrop hidden">
 <div class="bottom-sheet">
 <h3 class="sheet-title" id="nap-modal-title">☁ Registrar Siesta</h3>
@@ -753,7 +498,6 @@ durmió rápido...
 </div>
 </div>
 </div>
-<!-- MODAL 3: COMIDA -->
 <div id="modal-food" class="modal-backdrop hidden">
 <div class="bottom-sheet">
 <h3 class="sheet-title" id="food-modal-title">🥄 Registrar Comida</h3>
@@ -797,7 +541,6 @@ encantó...
 </div>
 </div>
 </div>
-<!-- MODAL 4: DETALLE / EDITAR -->
 <div id="modal-detail" class="modal-backdrop hidden">
 <div class="bottom-sheet">
 <div class="sheet-header">
@@ -812,12 +555,11 @@ registro">✏</button>
 <div class="sheet-actions">
 <button class="btn-delete" onclick="deleteCurrentDetailItem()">🗑
 Borrar</button>
-</div>
-</div>
-</div>
 <button class="btn-cancel" onclick="closeModals()">Cerrar</button>
 <button class="btn-save" onclick="switchToEditFromDetail()">✏ Editar</button>
-<!-- MODAL 5: NUEVO PERFIL -->
+</div>
+</div>
+</div>
 <div id="modal-profile" class="modal-backdrop hidden">
 <div class="bottom-sheet">
 <h3 class="sheet-title" style="margin-bottom:14px;">👶 Nuevo Perfil de Hijo</h3>
@@ -829,7 +571,6 @@ Borrar</button>
 </div>
 </div>
 </div>
-<!-- Barra de Navegación -->
 <div class="tab-bar">
 <button class="tab-btn active" id="tab-home"
 onclick="switchTab('home')">Hoy</button>
@@ -892,16 +633,13 @@ profiles: {
 'Agustín': defaultProfileData()
 }
 };
-// Retrocompatibilidad con nombres nuevos y antiguos en settings
 Object.keys(state.profiles).forEach(pName => {
 const p = state.profiles[pName];
 if (!p.settings) p.settings = defaultProfileData().settings;
 if (p.settings.napDurationMin === undefined) p.settings.napDurationMin = 1.0;
 if (p.settings.napDurationMax === undefined) p.settings.napDurationMax = 2.0;
-if (p.settings.nightNapMin === undefined) p.settings.nightNapMin =
-p.settings.nightNapGap || 1.5;
-if (p.settings.nightNapMax === undefined) p.settings.nightNapMax =
-(p.settings.nightNapGap ? p.settings.nightNapGap + 1 : 3.0);
+if (p.settings.nightNapMin === undefined) p.settings.nightNapMin = 1.5;
+if (p.settings.nightNapMax === undefined) p.settings.nightNapMax = 3.0;
 if (!p.days) p.days = {};
 Object.keys(p.days).forEach(dKey => {
 if (!p.days[dKey].feeds) p.days[dKey].feeds = [];
@@ -914,9 +652,9 @@ try { localStorage.setItem('babyOneHandDB'
 , JSON.stringify(state)); }
 catch (e) { memoryFallback = state; }
 renderAll();
+}
 function getActiveProfile() {
 return state.profiles[state.activeChild];
-}
 }
 function ensureDay(profile, dateISO) {
 if (!profile.days[dateISO]) {
@@ -1031,7 +769,6 @@ btn.textContent =
 btn.onclick = () => {
 state.activeChild = name;
 saveState();
-;
 };
 bar.appendChild(btn);
 });
@@ -1043,6 +780,7 @@ document.getElementById('input-profile-name').value = '';
 document.getElementById('modal-profile').classList.remove('hidden');
 };
 bar.appendChild(addBtn);
+;
 }
 function confirmNewProfile() {
 const nameInput = document.getElementById('input-profile-name').value.trim();
@@ -1059,7 +797,6 @@ todayISO = getLocalTodayISO();
 const prof = getActiveProfile();
 const s = prof.settings;
 document.getElementById('today-date-title').textContent = formatDDMM(todayISO);
-// 1. PROYECCIÓN DE LECHE
 const latestFeed = findLatestFeed(prof);
 const milkTimeEl = document.getElementById('next-milk-time');
 const milkBadgeEl = document.getElementById('next-milk-badge');
@@ -1087,7 +824,6 @@ milkBadgeEl.textContent =
 `Día (${s.dayMilkGap}h)`
 ;
 }
-// 2. PROYECCIÓN DE SIESTA / DESPERTAR PROYECTADO (Día vs Noche)
 const ongoingNap = findOngoingNap(prof);
 const banner = document.getElementById('ongoing-nap-container');
 const napLabelEl = document.getElementById('next-nap-label');
@@ -1126,11 +862,9 @@ const latestNap = findLatestCompletedNap(prof);
 if (latestNap) {
 const wakeTimeStr = latestNap.item.end;
 const night = isNightTime(wakeTimeStr, s);
-// Durante el día usa las horas despierto (dayNapGap); durante la noche usa 0
-porque se encadena altiro
 const gapHours = night ? 0 : s.dayNapGap;
-const nextNapTimeStr = minsToTime(timeToMins(wakeTimeStr) + gapHours *
 60);
+const nextNapTimeStr = minsToTime(timeToMins(wakeTimeStr) + gapHours *
 const nextNapTs = latestNap.endTs + gapHours * 3600000;
 const isOverdue = Date.now() > nextNapTs;
 napTimeEl.textContent = nextNapTimeStr;
@@ -1314,8 +1048,8 @@ class="detail-row"><span>Comida</span><strong>${escapeHTML(item.foodType)}</stro
 <div class="detail-row"><span>Cantidad</span><strong>${item.amount}
 ${item.unit}</strong></div>
 `
-;
 }
+;
 if (item.comment && item.comment.trim()) {
 commentBox.textContent = item.comment.trim();
 commentBox.style.color = 'var(--text-dark)';
@@ -1469,8 +1203,6 @@ const targetDay = ensureDay(prof, finishingNapRef.dateISO);
 const oldNap = targetDay.naps[finishingNapRef.index];
 oldNap.end = wakeTime;
 oldNap.comment = comment;
-// TRUCO NOCTURNO INTELIGENTE: Si la siesta terminada era nocturna, hacer
-RESET instantáneo abriendo una nueva siesta al tiro
 const isNight = isNightTime(wakeTime, s) || isNightTime(oldNap.start, s);
 if (isNight) {
 targetDay.naps.push({ start: wakeTime, end: null, comment: '' });
@@ -1485,10 +1217,10 @@ day.naps.push({
 start: document.getElementById('input-nap-start').value,
 end: document.getElementById('input-nap-end').value,
 comment
-}
 });
 }
 day.naps.sort((a, b) => timeToMins(a.start) - timeToMins(b.start));
+}
 closeModals();
 saveState();
 }
@@ -1681,11 +1413,11 @@ ev.style.top =
 ;
 ev.textContent =
 `🍼 ${f.time} • ${f.type}${f.comment ? ' 💬' : ''}`
-;
 ev.onclick = () => openItemDetail(selectedCalDate,
 'feeds'
 , idx);
 timeline.appendChild(ev);
+;
 });
 selData.foods.forEach((fo, idx) => {
 const topPx = (timeToMins(fo.time) / 60) * 36;
@@ -1701,6 +1433,9 @@ ev.textContent =
 ;
 ev.onclick = () => openItemDetail(selectedCalDate,
 timeline.appendChild(ev);
+'foods'
+, idx);
+});
 selData.naps.forEach((n, idx) => {
 const startM = timeToMins(n.start);
 const endM = n.end ? timeToMins(n.end) : startM + 45;
@@ -1722,9 +1457,6 @@ ev.textContent =
 ☁ Siesta (${n.start} - ${n.end || 'En curso'})${n.comment ? ' 💬' :
 ''}`
 ;
-'foods'
-, idx);
-});
 ev.onclick = () => openItemDetail(selectedCalDate,
 timeline.appendChild(ev);
 'naps'
