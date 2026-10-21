@@ -1,1883 +1,1919 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-   <meta name="apple-mobile-web-app-capable" content="yes">
-   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-   <meta name="apple-mobile-web-app-title" content="Mis Bebés">
-   <title>Mis Bebés - Rutina</title>
-   <!-- Generador automático de ícono PNG real para iPhone -->
-   <script>
-     (function() {
-       try {
-         const c = document.createElement('canvas');
-         c.width = 180; c.height = 180;
-         const ctx = c.getContext('2d');
-         ctx.fillStyle = '#EAC8CA';
-         ctx.fillRect(0, 0, 180, 180);
-         ctx.fillStyle = '#FAF6F0';
-         ctx.beginPath();
-         ctx.arc(90, 90, 64, 0, Math.PI * 2);
-         ctx.fill();
-         ctx.font = '75px sans-serif';
-         ctx.textAlign = 'center';
-         ctx.textBaseline = 'middle';
-         ctx.fillText('🍼', 90, 95);
-         const link = document.createElement('link');
-         link.rel = 'apple-touch-icon';
-         link.href = c.toDataURL('image/png');
-         document.head.appendChild(link);
-       } catch(e) {}
-     })();
-   </script>
-   <style>
-       :root {
-           --bg-cream: #FAF6F0;
-           --card-beige: #F2EAE1;
-           --pale-pink: #EAC8CA;
-           --deep-pink: #C98A8E;
-           --pastel-sage: #CFE0D8;
-           --deep-sage: #6E9483;
-           --pastel-peach: #F5D5C6;
-           --deep-peach: #D99B82;
-           --night-lavender: #D8D2E7;
-           --text-dark: #4A4238;
-           --text-muted: #8C8275;
-           --white: #FFFFFF;
-           --danger: #D97B7B;
-       }
-       * {
-           box-sizing: border-box;
-           font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "Segoe UI", Roboto, sans-serif;
-           -webkit-tap-highlight-color: transparent;
-       }
-       body {
-           background-color: var(--bg-cream);
-           color: var(--text-dark);
-           margin: 0;
-           padding: 14px 16px 115px 16px;
-           max-width: 480px;
-           margin-left: auto;
-           margin-right: auto;
-           user-select: none;
-       }
- 
-       /* Barra Superior de Perfiles */
-       .profile-bar {
-           display: flex;
-           gap: 8px;
-           overflow-x: auto;
-           padding-bottom: 10px;
-           margin-bottom: 12px;
-           scrollbar-width: none;
-       }
-       .profile-bar::-webkit-scrollbar { display: none; }
-       .profile-pill {
-           background: var(--card-beige);
-           color: var(--text-muted);
-           border: 2px solid transparent;
-           padding: 10px 16px;
-           border-radius: 999px;
-           font-size: 15px;
-           font-weight: 600;
-           white-space: nowrap;
-           cursor: pointer;
-       }
-       .profile-pill.active {
-           background: var(--pale-pink);
-           color: var(--text-dark);
-           border-color: var(--deep-pink);
-       }
-       .profile-pill.add-btn {
-           background: var(--white);
-           border: 2px dashed var(--deep-pink);
-           color: var(--deep-pink);
-       }
- 
-       /* Tarjetas de Proyección */
-       .predictions-grid {
-           display: grid;
-           grid-template-columns: 1fr 1fr;
-           gap: 12px;
-           margin-bottom: 16px;
-       }
-       .pred-box {
-           background: var(--pale-pink);
-           padding: 16px 10px;
-           border-radius: 24px;
-           text-align: center;
-           box-shadow: 0 4px 14px rgba(201, 138, 142, 0.18);
-           display: flex;
-           flex-direction: column;
-           justify-content: center;
-           align-items: center;
-       }
-       .pred-box.nap {
-           background: var(--pastel-sage);
-           box-shadow: 0 4px 14px rgba(110, 148, 131, 0.18);
-       }
-       .pred-box small {
-           font-size: 11px;
-           font-weight: 700;
-           text-transform: uppercase;
-           letter-spacing: 0.4px;
-           display: block;
-           opacity: 0.85;
-       }
-       .pred-box strong {
-           font-size: 27px;
-           display: block;
-           margin: 5px 0;
-           line-height: 1.1;
-       }
-       .pred-box strong.range-text {
-           font-size: 20px;
-           margin: 8px 0;
-       }
-       .pred-box .mode-badge {
-           font-size: 11px;
-           background: rgba(255,255,255,0.7);
-           padding: 3px 8px;
-           border-radius: 10px;
-           font-weight: 600;
-       }
- 
-       /* Banner de Siesta en Curso */
-       .ongoing-nap-banner {
-           background: var(--night-lavender);
-           padding: 16px;
-           border-radius: 22px;
-           margin-bottom: 16px;
-           display: flex;
-           flex-direction: column;
-           gap: 10px;
-           border: 2px solid #B5A8D1;
-       }
-       .ongoing-nap-banner button {
-           background: var(--text-dark);
-           color: var(--white);
-           border: none;
-           padding: 16px;
-           border-radius: 16px;
-           font-size: 17px;
-           font-weight: 700;
-           cursor: pointer;
-       }
- 
-       /* Botones Grandes para 1 Mano */
-       .big-actions {
-           display: flex;
-           flex-direction: column;
-           gap: 11px;
-           margin-bottom: 20px;
-       }
-       .big-btn {
-           width: 100%;
-           padding: 20px 18px;
-           border-radius: 24px;
-           border: none;
-           font-size: 19px;
-           font-weight: 700;
-           color: var(--text-dark);
-           display: flex;
-           align-items: center;
-           justify-content: center;
-           gap: 10px;
-           cursor: pointer;
-           box-shadow: 0 5px 14px rgba(0,0,0,0.06);
-           transition: transform 0.1s;
-       }
-       .big-btn:active { transform: scale(0.98); }
-       .big-btn.milk {
-           background: var(--pale-pink);
-           border: 2px solid var(--deep-pink);
-       }
-       .big-btn.nap {
-           background: var(--pastel-sage);
-           border: 2px solid var(--deep-sage);
-       }
-       .big-btn.food {
-           background: var(--pastel-peach);
-           border: 2px solid var(--deep-peach);
-       }
- 
-       /* Tarjetas y Contenedores */
-       .card {
-           background: var(--card-beige);
-           padding: 18px;
-           border-radius: 24px;
-           margin-bottom: 16px;
-       }
-       .card h3 {
-           margin: 0 0 12px 0;
-           font-size: 17px;
-       }
- 
-       /* Ítems en Hoy (Clicables con vista previa de comentario) */
-       .today-item {
-           background: var(--white);
-           padding: 14px 16px;
-           border-radius: 16px;
-           margin-bottom: 10px;
-           display: flex;
-           justify-content: space-between;
-           align-items: center;
-           gap: 10px;
-           cursor: pointer;
-           border-left: 5px solid transparent;
-           transition: transform 0.1s;
-       }
-       .today-item:active { transform: scale(0.99); }
-       .today-item.type-feed { border-left-color: var(--deep-pink); }
-       .today-item.type-nap { border-left-color: var(--deep-sage); }
-       .today-item.type-food { border-left-color: var(--deep-peach); }
-       .item-main {
-           flex: 1;
-           min-width: 0;
-       }
-       .item-title {
-           font-size: 15px;
-           margin-bottom: 2px;
-       }
-       .item-comment-preview {
-           font-size: 12px;
-           color: var(--text-muted);
-           white-space: nowrap;
-           overflow: hidden;
-           text-overflow: ellipsis;
-           margin-top: 3px;
-           font-style: italic;
-       }
-       .item-chevron {
-           color: var(--text-muted);
-           font-size: 18px;
-           font-weight: bold;
-       }
-       .finish-inline-btn {
-           background: var(--pastel-sage);
-           border: 1px solid var(--deep-sage);
-           padding: 8px 12px;
-           border-radius: 10px;
-           font-weight: 700;
-           font-size: 13px;
-           color: var(--text-dark);
-           cursor: pointer;
-           white-space: nowrap;
-       }
- 
-       /* Calendario Mensual */
-       .cal-header {
-           display: flex;
-           justify-content: space-between;
-           align-items: center;
-           margin-bottom: 12px;
-           gap: 8px;
-       }
-       .cal-nav-btn {
-           background: var(--white);
-           border: none;
-           width: 44px;
-           height: 44px;
-           border-radius: 14px;
-           font-size: 20px;
-           font-weight: bold;
-           color: var(--text-dark);
-           cursor: pointer;
-       }
-       .cal-select-group { display: flex; gap: 6px; }
-       .cal-select {
-           background: var(--white);
-           border: 1px solid var(--deep-pink);
-           padding: 8px 10px;
-           border-radius: 12px;
-           font-size: 15px;
-           font-weight: 700;
-           color: var(--text-dark);
-           outline: none;
-       }
-       .cal-grid {
-           display: grid;
-           grid-template-columns: repeat(7, 1fr);
-           gap: 6px;
-           text-align: center;
-       }
-       .cal-day-name {
-           font-size: 12px;
-           color: var(--text-muted);
-           font-weight: 600;
-           padding-bottom: 6px;
-       }
-       .cal-cell {
-           aspect-ratio: 1;
-           display: flex;
-           flex-direction: column;
-           align-items: center;
-           justify-content: center;
-           border-radius: 14px;
-           background: var(--white);
-           font-size: 15px;
-           font-weight: 600;
-           cursor: pointer;
-       }
-       .cal-cell.has-data { background: var(--pale-pink); }
-       .cal-cell.selected { outline: 3px solid var(--text-dark); }
-       .cal-dot {
-           width: 5px;
-           height: 5px;
-           border-radius: 50%;
-           background: var(--deep-pink);
-           margin-top: 2px;
-       }
- 
-       /* Grilla Horaria Estilo Google Calendar */
-       .gcal-timeline {
-           position: relative;
-           background: var(--white);
-           border-radius: 18px;
-           height: 500px;
-           overflow-y: auto;
-           border: 1px solid rgba(0,0,0,0.06);
-       }
-       .gcal-canvas {
-           position: relative;
-           height: 864px; /* 24h * 36px */
-       }
-       .gcal-hour-row {
-           height: 36px;
-           border-bottom: 1px solid #F3EFEA;
-           display: flex;
-           align-items: flex-start;
-           padding-left: 8px;
-           padding-top: 2px;
-           font-size: 11px;
-           color: var(--text-muted);
-       }
-       .gcal-event {
-           position: absolute;
-           left: 58px;
-           right: 12px;
-           border-radius: 8px;
-           padding: 3px 10px;
-           font-size: 12px;
-           font-weight: 600;
-           overflow: hidden;
-           white-space: nowrap;
-           text-overflow: ellipsis;
-           box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-           display: flex;
-           align-items: center;
-           cursor: pointer;
-       }
-       .gcal-event.milk {
-           background: var(--pale-pink);
-           border-left: 4px solid var(--deep-pink);
-           height: 26px;
-           z-index: 3;
-       }
-       .gcal-event.food {
-           background: var(--pastel-peach);
-           border-left: 4px solid var(--deep-peach);
-           height: 26px;
-           z-index: 4;
-       }
-       .gcal-event.nap {
-           background: var(--pastel-sage);
-           border-left: 4px solid var(--deep-sage);
-           z-index: 2;
-       }
- 
-       /* Estadísticas */
-       .range-pills {
-           display: flex;
-           gap: 8px;
-           margin-bottom: 14px;
-       }
-       .range-pill {
-           flex: 1;
-           padding: 12px;
-           border-radius: 14px;
-           border: none;
-           background: var(--card-beige);
-           font-weight: 600;
-           color: var(--text-dark);
-           cursor: pointer;
-       }
-       .range-pill.active {
-           background: var(--deep-pink);
-           color: var(--white);
-       }
-       .kpi-grid {
-           display: grid;
-           grid-template-columns: 1fr 1fr;
-           gap: 10px;
-           margin-bottom: 16px;
-       }
-       .kpi-card {
-           background: var(--white);
-           padding: 12px;
-           border-radius: 16px;
-           text-align: center;
-           border: 1px solid var(--card-beige);
-       }
-       .kpi-card small {
-           font-size: 11px;
-           color: var(--text-muted);
-           display: block;
-           margin-bottom: 4px;
-       }
-       .kpi-card strong {
-           font-size: 20px;
-           color: var(--text-dark);
-       }
-       svg.line-chart {
-           width: 100%;
-           height: 185px;
-           background: var(--white);
-           border-radius: 16px;
-           padding: 10px;
-       }
- 
-       /* Modales Inferiores (Bottom Sheets) */
-       .modal-backdrop {
-           position: fixed;
-           inset: 0;
-           background: rgba(0,0,0,0.45);
-           display: flex;
-           align-items: flex-end;
-           justify-content: center;
-           z-index: 100;
-       }
-       .bottom-sheet {
-           background: var(--bg-cream);
-           width: 100%;
-           max-width: 480px;
-           max-height: 90vh;
-           overflow-y: auto;
-           border-radius: 28px 28px 0 0;
-           padding: 22px 20px 34px 20px;
-           box-shadow: 0 -8px 30px rgba(0,0,0,0.18);
-       }
-       .sheet-header {
-           display: flex;
-           justify-content: space-between;
-           align-items: center;
-           margin-bottom: 14px;
-       }
-       .sheet-title {
-           font-size: 20px;
-           font-weight: 700;
-           margin: 0;
-           text-align: center;
-           flex: 1;
-       }
-       .icon-btn {
-           background: var(--card-beige);
-           border: none;
-           width: 42px;
-           height: 42px;
-           border-radius: 14px;
-           font-size: 18px;
-           cursor: pointer;
-           display: flex;
-           align-items: center;
-           justify-content: center;
-       }
-       .big-segmented {
-           display: grid;
-           grid-template-columns: 1fr 1fr;
-           gap: 10px;
-           margin-bottom: 14px;
-       }
-       .unit-pills {
-           display: grid;
-           grid-template-columns: repeat(5, 1fr);
-           gap: 6px;
-           margin-bottom: 14px;
-       }
-       .unit-btn {
-           padding: 12px 4px;
-           border-radius: 12px;
-           border: 2px solid var(--pastel-peach);
-           background: var(--white);
-           font-size: 14px;
-           font-weight: 700;
-           color: var(--text-muted);
-           cursor: pointer;
-       }
-       .unit-btn.active {
-           background: var(--pastel-peach);
-           border-color: var(--deep-peach);
-           color: var(--text-dark);
-       }
-       .seg-btn {
-           padding: 16px 10px;
-           border-radius: 18px;
-           border: 2px solid var(--pale-pink);
-           background: var(--white);
-           font-size: 15px;
-           font-weight: 700;
-           color: var(--text-muted);
-           cursor: pointer;
-       }
-       .seg-btn.active {
-           background: var(--pale-pink);
-           border-color: var(--deep-pink);
-           color: var(--text-dark);
-       }
-       .field-label {
-           display: block;
-           font-size: 13px;
-           font-weight: 600;
-           margin-bottom: 6px;
-           color: var(--text-muted);
-       }
-       .big-input {
-           width: 100%;
-           padding: 14px;
-           font-size: 19px;
-           font-weight: 700;
-           text-align: center;
-           border-radius: 16px;
-           border: 2px solid var(--pale-pink);
-           background: var(--white);
-           color: var(--text-dark);
-           margin-bottom: 14px;
-           outline: none;
-       }
-       .comment-area {
-           width: 100%;
-           padding: 12px 14px;
-           font-size: 15px;
-           border-radius: 16px;
-           border: 2px solid var(--card-beige);
-           background: var(--white);
-           color: var(--text-dark);
-           min-height: 76px;
-           resize: none;
-           margin-bottom: 16px;
-           outline: none;
-       }
-       .detail-box {
-           background: var(--white);
-           padding: 16px;
-           border-radius: 18px;
-           margin-bottom: 14px;
-       }
-       .detail-row {
-           display: flex;
-           justify-content: space-between;
-           padding: 8px 0;
-           border-bottom: 1px solid #F3EFEA;
-           font-size: 15px;
-       }
-       .detail-row:last-child { border-bottom: none; }
-       .detail-comment-box {
-           background: var(--white);
-           padding: 16px;
-           border-radius: 18px;
-           margin-bottom: 16px;
-           font-size: 15px;
-           line-height: 1.45;
-           white-space: pre-wrap;
-           word-break: break-word;
-       }
-       .sheet-actions {
-           display: flex;
-           gap: 10px;
-       }
-       .btn-cancel {
-           flex: 1;
-           padding: 16px;
-           border-radius: 18px;
-           border: none;
-           background: var(--card-beige);
-           font-size: 16px;
-           font-weight: 700;
-           color: var(--text-dark);
-           cursor: pointer;
-       }
-       .btn-save {
-           flex: 2;
-           padding: 16px;
-           border-radius: 18px;
-           border: none;
-           background: var(--deep-pink);
-           font-size: 16px;
-           font-weight: 700;
-           color: var(--white);
-           cursor: pointer;
-       }
-       .btn-delete {
-           padding: 16px;
-           border-radius: 18px;
-           border: none;
-           background: #F9E2E2;
-           color: #B34747;
-           font-size: 15px;
-           font-weight: 700;
-           cursor: pointer;
-       }
- 
-       /* Navegación Inferior */
-       .tab-bar {
-           position: fixed;
-           bottom: 0; left: 0; right: 0;
-           background: var(--card-beige);
-           display: grid;
-           grid-template-columns: repeat(4, 1fr);
-           padding: 10px 8px 24px 8px;
-           border-top: 1px solid rgba(0,0,0,0.06);
-           z-index: 50;
-           max-width: 480px;
-           margin: 0 auto;
-       }
-       .tab-btn {
-           background: none;
-           border: none;
-           padding: 10px 4px;
-           font-size: 13px;
-           font-weight: 700;
-           color: var(--text-muted);
-           border-radius: 14px;
-           cursor: pointer;
-       }
-       .tab-btn.active {
-           background: var(--pale-pink);
-           color: var(--text-dark);
-       }
-       .setting-row {
-           display: flex;
-           justify-content: space-between;
-           align-items: center;
-           padding: 10px 0;
-           border-bottom: 1px solid rgba(0,0,0,0.05);
-           font-size: 14px;
-           gap: 8px;
-       }
-       .setting-row:last-child { border-bottom: none; }
-       .setting-row input {
-           width: 95px;
-           padding: 10px;
-           border-radius: 12px;
-           border: 1px solid var(--deep-pink);
-           font-size: 15px;
-           font-weight: 600;
-           text-align: center;
-           background: var(--white);
-           color: var(--text-dark);
-       }
-       .hidden { display: none !important; }
-   </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,
+maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Mis Bebés">
+<title>Mis Bebés - Rutina</title>
+<!-- Generador automático de ícono PNG real para iPhone -->
+<script>
+(function() {
+try {
+const c = document.createElement('canvas');
+c.width = 180; c.height = 180;
+const ctx = c.getContext('2d');
+ctx.fillStyle = '#EAC8CA';
+ctx.fillRect(0, 0, 180, 180);
+ctx.fillStyle = '#FAF6F0';
+ctx.beginPath();
+ctx.arc(90, 90, 64, 0, Math.PI * 2);
+ctx.fill();
+ctx.font = '75px sans-serif';
+ctx.textAlign = 'center';
+ctx.textBaseline = 'middle';
+ctx.fillText('🍼'
+, 90, 95);
+const link = document.createElement('link');
+link.rel = 'apple-touch-icon';
+link.href = c.toDataURL('image/png');
+document.head.appendChild(link);
+} catch(e) {}
+})();
+</script>
+<style>
+:root {
+--bg-cream: #FAF6F0;
+--card-beige: #F2EAE1;
+--pale-pink: #EAC8CA;
+--deep-pink: #C98A8E;
+--pastel-sage: #CFE0D8;
+--deep-sage: #6E9483;
+--pastel-peach: #F5D5C6;
+--deep-peach: #D99B82;
+--night-lavender: #D8D2E7;
+--text-dark: #4A4238;
+--text-muted: #8C8275;
+--white: #FFFFFF;
+}
+* {
+box-sizing: border-box;
+font-family: -apple-system, BlinkMacSystemFont,
+Roboto, sans-serif;
+-webkit-tap-highlight-color: transparent;
+}
+body {
+background-color: var(--bg-cream);
+color: var(--text-dark);
+margin: 0;
+padding: 14px 16px 115px 16px;
+max-width: 480px;
+margin-left: auto;
+margin-right: auto;
+user-select: none;
+"SF Pro Rounded"
+,
+"Segoe UI"
+,
+}
+/* Barra Superior de Perfiles */
+.profile-bar {
+display: flex;
+gap: 8px;
+overflow-x: auto;
+padding-bottom: 10px;
+margin-bottom: 12px;
+scrollbar-width: none;
+}
+.profile-bar::-webkit-scrollbar { display: none; }
+.profile-pill {
+background: var(--card-beige);
+color: var(--text-muted);
+border: 2px solid transparent;
+padding: 10px 16px;
+border-radius: 999px;
+font-size: 15px;
+font-weight: 600;
+white-space: nowrap;
+cursor: pointer;
+}
+.profile-pill.active {
+background: var(--pale-pink);
+color: var(--text-dark);
+border-color: var(--deep-pink);
+}
+.profile-pill.add-btn {
+background: var(--white);
+border: 2px dashed var(--deep-pink);
+color: var(--deep-pink);
+}
+/* Tarjetas de Proyección */
+.predictions-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 12px;
+margin-bottom: 16px;
+}
+.pred-box {
+background: var(--pale-pink);
+padding: 16px 10px;
+border-radius: 24px;
+text-align: center;
+box-shadow: 0 4px 14px rgba(201, 138, 142, 0.18);
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+}
+.pred-box.nap {
+background: var(--pastel-sage);
+box-shadow: 0 4px 14px rgba(110, 148, 131, 0.18);
+}
+.pred-box small {
+font-size: 11px;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 0.4px;
+display: block;
+opacity: 0.85;
+}
+.pred-box strong {
+font-size: 27px;
+display: block;
+margin: 5px 0;
+line-height: 1.1;
+}
+.pred-box strong.range-text {
+font-size: 20px;
+margin: 8px 0;
+}
+.pred-box .mode-badge {
+font-size: 11px;
+background: rgba(255,255,255,0.7);
+padding: 3px 8px;
+border-radius: 10px;
+font-weight: 600;
+}
+/* Banner de Siesta en Curso */
+.ongoing-nap-banner {
+background: var(--night-lavender);
+padding: 16px;
+border-radius: 22px;
+margin-bottom: 16px;
+display: flex;
+flex-direction: column;
+gap: 10px;
+border: 2px solid #B5A8D1;
+}
+.ongoing-nap-banner button {
+background: var(--text-dark);
+color: var(--white);
+border: none;
+padding: 16px;
+border-radius: 16px;
+font-size: 17px;
+font-weight: 700;
+cursor: pointer;
+}
+/* Botones Grandes para 1 Mano */
+.big-actions {
+display: flex;
+flex-direction: column;
+gap: 11px;
+margin-bottom: 20px;
+}
+.big-btn {
+width: 100%;
+padding: 20px 18px;
+border-radius: 24px;
+border: none;
+font-size: 19px;
+font-weight: 700;
+color: var(--text-dark);
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
+cursor: pointer;
+box-shadow: 0 5px 14px rgba(0,0,0,0.06);
+transition: transform 0.1s;
+}
+.big-btn:active { transform: scale(0.98); }
+.big-btn.milk {
+background: var(--pale-pink);
+border: 2px solid var(--deep-pink);
+}
+.big-btn.nap {
+background: var(--pastel-sage);
+border: 2px solid var(--deep-sage);
+}
+.big-btn.food {
+background: var(--pastel-peach);
+border: 2px solid var(--deep-peach);
+}
+/* Tarjetas y Contenedores */
+.card {
+background: var(--card-beige);
+padding: 18px;
+border-radius: 24px;
+margin-bottom: 16px;
+}
+.card h3 {
+margin: 0 0 12px 0;
+font-size: 17px;
+}
+/* Ítems en Hoy */
+.today-item {
+background: var(--white);
+padding: 14px 16px;
+border-radius: 16px;
+margin-bottom: 10px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 10px;
+cursor: pointer;
+border-left: 5px solid transparent;
+transition: transform 0.1s;
+}
+.today-item:active { transform: scale(0.99); }
+.today-item.type-feed { border-left-color: var(--deep-pink); }
+.today-item.type-nap { border-left-color: var(--deep-sage); }
+.today-item.type-food { border-left-color: var(--deep-peach); }
+.item-main { flex: 1; min-width: 0; }
+.item-title { font-size: 15px; margin-bottom: 2px; }
+.item-comment-preview {
+font-size: 12px;
+color: var(--text-muted);
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+margin-top: 3px;
+font-style: italic;
+}
+.item-chevron { color: var(--text-muted); font-size: 18px; font-weight: bold; }
+.finish-inline-btn {
+background: var(--pastel-sage);
+border: 1px solid var(--deep-sage);
+padding: 8px 12px;
+border-radius: 10px;
+font-weight: 700;
+font-size: 13px;
+color: var(--text-dark);
+cursor: pointer;
+white-space: nowrap;
+}
+/* Calendario Mensual */
+.cal-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 12px;
+gap: 8px;
+}
+.cal-nav-btn {
+background: var(--white);
+border: none;
+width: 44px;
+height: 44px;
+border-radius: 14px;
+font-size: 20px;
+font-weight: bold;
+color: var(--text-dark);
+cursor: pointer;
+}
+.cal-select-group { display: flex; gap: 6px; }
+.cal-select {
+background: var(--white);
+border: 1px solid var(--deep-pink);
+padding: 8px 10px;
+border-radius: 12px;
+font-size: 15px;
+font-weight: 700;
+color: var(--text-dark);
+outline: none;
+}
+.cal-grid {
+display: grid;
+grid-template-columns: repeat(7, 1fr);
+gap: 6px;
+text-align: center;
+}
+.cal-day-name {
+font-size: 12px;
+color: var(--text-muted);
+font-weight: 600;
+padding-bottom: 6px;
+}
+.cal-cell {
+aspect-ratio: 1;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+border-radius: 14px;
+background: var(--white);
+font-size: 15px;
+font-weight: 600;
+cursor: pointer;
+}
+.cal-cell.has-data { background: var(--pale-pink); }
+.cal-cell.selected { outline: 3px solid var(--text-dark); }
+.cal-dot {
+width: 5px; height: 5px;
+border-radius: 50%;
+background: var(--deep-pink);
+margin-top: 2px;
+}
+/* Grilla Horaria Estilo Google Calendar */
+.gcal-timeline {
+position: relative;
+background: var(--white);
+border-radius: 18px;
+height: 500px;
+overflow-y: auto;
+border: 1px solid rgba(0,0,0,0.06);
+}
+.gcal-canvas { position: relative; height: 864px; }
+.gcal-hour-row {
+height: 36px;
+border-bottom: 1px solid #F3EFEA;
+display: flex;
+align-items: flex-start;
+padding-left: 8px;
+padding-top: 2px;
+font-size: 11px;
+color: var(--text-muted);
+}
+.gcal-event {
+position: absolute;
+left: 58px; right: 12px;
+border-radius: 8px;
+padding: 3px 10px;
+font-size: 12px; font-weight: 600;
+overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+display: flex; align-items: center;
+cursor: pointer;
+}
+.gcal-event.milk { background: var(--pale-pink); border-left: 4px solid var(--deep-pink);
+height: 26px; z-index: 3; }
+.gcal-event.food { background: var(--pastel-peach); border-left: 4px solid
+var(--deep-peach); height: 26px; z-index: 4; }
+.gcal-event.nap { background: var(--pastel-sage); border-left: 4px solid
+var(--deep-sage); z-index: 2; }
+/* Estadísticas */
+.range-pills { display: flex; gap: 8px; margin-bottom: 14px; }
+.range-pill {
+flex: 1; padding: 12px; border-radius: 14px; border: none;
+background: var(--card-beige); font-weight: 600; color: var(--text-dark); cursor:
+pointer;
+}
+.range-pill.active { background: var(--deep-pink); color: var(--white); }
+.kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;
+}
+.kpi-card { background: var(--white); padding: 12px; border-radius: 16px; text-align:
+center; border: 1px solid var(--card-beige); }
+.kpi-card small { font-size: 11px; color: var(--text-muted); display: block; margin-bottom:
+4px; }
+.kpi-card strong { font-size: 20px; color: var(--text-dark); }
+svg.line-chart { width: 100%; height: 185px; background: var(--white); border-radius:
+16px; padding: 10px; }
+/* Ajustes Estilizados (Bloques Día y Noche) */
+.settings-block {
+background: var(--white);
+border-radius: 20px;
+padding: 16px;
+margin-bottom: 14px;
+border: 1px solid rgba(0,0,0,0.04);
+}
+.settings-block h4 {
+margin: 0 0 12px 0;
+font-size: 16px;
+color: var(--text-dark);
+border-bottom: 2px solid var(--card-beige);
+padding-bottom: 6px;
+}
+.setting-item {
+margin-bottom: 12px;
+padding-bottom: 10px;
+border-bottom: 1px solid #F9F6F0;
+}
+.setting-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.setting-label-row {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 4px;
+}
+.setting-label-row span { font-size: 14px; font-weight: 600; color: var(--text-dark); }
+.setting-label-row input {
+width: 100px;
+padding: 8px;
+border-radius: 10px;
+border: 1px solid var(--deep-pink);
+font-size: 15px; font-weight: 700;
+text-align: center; background: var(--bg-cream); color: var(--text-dark);
+}
+.setting-desc {
+font-size: 12px;
+color: var(--text-muted);
+line-height: 1.35;
+}
+/* Modales */
+.modal-backdrop {
+position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+display: flex; align-items: flex-end; justify-content: center; z-index: 100;
+}
+.bottom-sheet {
+background: var(--bg-cream); width: 100%; max-width: 480px; max-height: 90vh;
+overflow-y: auto; border-radius: 28px 28px 0 0; padding: 22px 20px 34px 20px;
+box-shadow: 0 -8px 30px rgba(0,0,0,0.18);
+}
+.sheet-header { display: flex; justify-content: space-between; align-items: center;
+margin-bottom: 14px; }
+.sheet-title { font-size: 20px; font-weight: 700; margin: 0; text-align: center; flex: 1; }
+.icon-btn {
+background: var(--card-beige); border: none; width: 42px; height: 42px;
+border-radius: 14px; font-size: 18px; cursor: pointer; display: flex; align-items: center;
+justify-content: center;
+}
+.big-segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+margin-bottom: 14px; }
+.unit-pills { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom:
+14px; }
+.unit-btn {
+cursor: pointer;
+padding: 12px 4px; border-radius: 12px; border: 2px solid var(--pastel-peach);
+background: var(--white); font-size: 14px; font-weight: 700; color: var(--text-muted);
+}
+.unit-btn.active { background: var(--pastel-peach); border-color: var(--deep-peach);
+color: var(--text-dark); }
+.seg-btn {
+padding: 16px 10px; border-radius: 18px; border: 2px solid var(--pale-pink);
+background: var(--white); font-size: 15px; font-weight: 700; color: var(--text-muted);
+cursor: pointer;
+}
+.seg-btn.active { background: var(--pale-pink); border-color: var(--deep-pink); color:
+var(--text-dark); }
+.field-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color:
+var(--text-muted); }
+.big-input {
+width: 100%; padding: 14px; font-size: 19px; font-weight: 700; text-align: center;
+border-radius: 16px; border: 2px solid var(--pale-pink); background: var(--white);
+color: var(--text-dark); margin-bottom: 14px; outline: none;
+}
+.comment-area {
+width: 100%; padding: 12px 14px; font-size: 15px; border-radius: 16px;
+border: 2px solid var(--card-beige); background: var(--white); color: var(--text-dark);
+min-height: 76px; resize: none; margin-bottom: 16px; outline: none;
+}
+.detail-box { background: var(--white); padding: 16px; border-radius: 18px;
+margin-bottom: 14px; }
+.detail-row { display: flex; justify-content: space-between; padding: 8px 0;
+border-bottom: 1px solid #F3EFEA; font-size: 15px; }
+.detail-row:last-child { border-bottom: none; }
+.detail-comment-box {
+background: var(--white); padding: 16px; border-radius: 18px; margin-bottom: 16px;
+font-size: 15px; line-height: 1.45; white-space: pre-wrap; word-break: break-word;
+}
+.sheet-actions { display: flex; gap: 10px; }
+.btn-cancel {
+flex: 1; padding: 16px; border-radius: 18px; border: none;
+background: var(--card-beige); font-size: 16px; font-weight: 700; color:
+var(--text-dark); cursor: pointer;
+}
+.btn-save {
+cursor: pointer;
+flex: 2; padding: 16px; border-radius: 18px; border: none;
+background: var(--deep-pink); font-size: 16px; font-weight: 700; color: var(--white);
+}
+.btn-delete {
+padding: 16px; border-radius: 18px; border: none;
+background: #F9E2E2; color: #B34747; font-size: 15px; font-weight: 700; cursor:
+pointer;
+}
+/* Barra de Navegación */
+.tab-bar {
+position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-beige);
+display: grid; grid-template-columns: repeat(4, 1fr); padding: 10px 8px 24px 8px;
+border-top: 1px solid rgba(0,0,0,0.06); z-index: 50; max-width: 480px; margin: 0 auto;
+}
+.tab-btn {
+background: none; border: none; padding: 10px 4px; font-size: 13px; font-weight:
+700;
+color: var(--text-muted); border-radius: 14px; cursor: pointer;
+}
+</style>
 </head>
 <body>
- 
-   <!-- Selector Superior de Perfiles -->
-   <div class="profile-bar" id="profile-bar"></div>
- 
-   <!-- PESTAÑA 1: HOY -->
-   <div id="view-home">
-       <div class="predictions-grid">
-           <div class="pred-box">
-               <small id="next-milk-label">Próxima Leche</small>
-               <strong id="next-milk-time">--:--</strong>
-               <span class="mode-badge" id="next-milk-badge">Gap Día</span>
-           </div>
-           <div class="pred-box nap">
-               <small id="next-nap-label">Próxima Siesta</small>
-               <strong id="next-nap-time">--:--</strong>
-               <span class="mode-badge" id="next-nap-badge">Gap Día</span>
-           </div>
-       </div>
- 
-       <!-- Banner automático si hay una siesta en curso -->
-       <div id="ongoing-nap-container" class="ongoing-nap-banner hidden">
-           <div style="display:flex; justify-content:space-between; align-items:center;">
-               <span>😴 <strong>Durmiendo ahora</strong> (inició <span id="ongoing-nap-start"></span>)</span>
-           </div>
-           <button onclick="openFinishNapModal()">☀️ Despertó (Registrar Fin)</button>
-       </div>
- 
-       <!-- 3 Botones Grandes para usar con 1 mano -->
-       <div class="big-actions">
-           <button class="big-btn milk" onclick="openMilkModal()">
-               🍼 Registrar Leche
-           </button>
-           <button class="big-btn nap" onclick="openNapModal()">
-               ☁️ Registrar Siesta
-           </button>
-           <button class="big-btn food" onclick="openFoodModal()">
-               🥄 Registrar Comida
-           </button>
-       </div>
- 
-       <!-- Lista de lo que lleva hoy -->
-       <div class="card">
-           <h3>📋 Lo que lleva hoy (<span id="today-date-title"></span>)</h3>
-           <div id="today-list"></div>
-       </div>
-   </div>
- 
-   <!-- PESTAÑA 2: CALENDARIO MENSUAL + ESTILO GOOGLE CALENDAR -->
-   <div id="view-calendar" class="hidden">
-       <div class="card">
-           <div class="cal-header">
-               <button class="cal-nav-btn" onclick="changeMonth(-1)">‹</button>
-               <div class="cal-select-group">
-                   <select id="cal-month-select" class="cal-select" onchange="onMonthYearSelect()"></select>
-                   <select id="cal-year-select" class="cal-select" onchange="onMonthYearSelect()"></select>
-               </div>
-               <button class="cal-nav-btn" onclick="changeMonth(1)">›</button>
-           </div>
-           <div class="cal-grid">
-               <div class="cal-day-name">L</div><div class="cal-day-name">M</div>
-               <div class="cal-day-name">M</div><div class="cal-day-name">J</div>
-               <div class="cal-day-name">V</div><div class="cal-day-name">S</div>
-               <div class="cal-day-name">D</div>
-           </div>
-           <div class="cal-grid" id="cal-grid-body"></div>
-       </div>
- 
-       <div class="card">
-           <h3>🗓️ Registros del <span id="selected-cal-date-label"></span></h3>
-           <div id="cal-day-items-list" style="margin-bottom:14px;"></div>
-           <div class="gcal-timeline" id="gcal-scroll-box">
-               <div class="gcal-canvas" id="gcal-timeline"></div>
-           </div>
-       </div>
-   </div>
- 
-   <!-- PESTAÑA 3: ESTADÍSTICAS -->
-   <div id="view-stats" class="hidden">
-       <div class="range-pills">
-           <button class="range-pill active" id="range-7" onclick="setStatsRange(7)">Última Semana</button>
-           <button class="range-pill" id="range-30" onclick="setStatsRange(30)">Último Mes</button>
-           <button class="range-pill" id="range-365" onclick="setStatsRange(365)">Último Año</button>
-       </div>
- 
-       <!-- Tarjetas de resumen incluyendo Comidas -->
-       <div class="kpi-grid">
-           <div class="kpi-card">
-               <small>Gap Promedio Leche</small>
-               <strong id="kpi-milk-gap">-- h</strong>
-           </div>
-           <div class="kpi-card">
-               <small>Gap Promedio Comidas</small>
-               <strong id="kpi-food-gap">-- h</strong>
-           </div>
-           <div class="kpi-card">
-               <small>Hora Promedio 1ª Comida</small>
-               <strong id="kpi-food-time">--:--</strong>
-           </div>
-           <div class="kpi-card">
-               <small>Comidas Promedio / Día</small>
-               <strong id="kpi-food-count">0</strong>
-           </div>
-       </div>
- 
-       <div class="card">
-           <h3>🍼 Gap Promedio entre Leches (Horas)</h3>
-           <svg class="line-chart" id="chart-milk-gap" viewBox="0 0 340 165"></svg>
-       </div>
- 
-       <div class="card">
-           <h3>☁️ Horas de Sueño en Siestas (Día/Mes)</h3>
-           <svg class="line-chart" id="chart-sleep-hours" viewBox="0 0 340 165"></svg>
-       </div>
- 
-       <div class="card">
-           <h3>🥄 Cantidad Total de Comida por Día</h3>
-           <svg class="line-chart" id="chart-food-amount" viewBox="0 0 340 165"></svg>
-       </div>
-   </div>
- 
-   <!-- PESTAÑA 4: AJUSTES -->
-   <div id="view-settings" class="hidden">
-       <div class="card">
-           <h3>☀️ Gaps de Día (Desde que despierta)</h3>
-           <div class="setting-row">
-               <span>Horas entre Leche (Día)</span>
-               <input type="number" step="0.5" min="0.5" max="12" id="set-day-milk" onchange="saveSettings()">
-           </div>
-           <div class="setting-row">
-               <span>Horas entre Siestas (Día)</span>
-               <input type="number" step="0.5" min="0.5" max="12" id="set-day-nap" onchange="saveSettings()">
-           </div>
-       </div>
- 
-       <div class="card">
-           <h3>⏰ Duración Proyectada de Siesta</h3>
-           <p style="font-size:12px; color:var(--text-muted); margin-top:0;">
-               Define entre cuántas horas suele durar una siesta para calcular el rango de hora en que debería despertar mientras duerme:
-           </p>
-           <div class="setting-row">
-               <span>Duración Mínima (Horas)</span>
-               <input type="number" step="0.25" min="0.25" max="10" id="set-nap-min" onchange="saveSettings()">
-           </div>
-           <div class="setting-row">
-               <span>Duración Máxima (Horas)</span>
-               <input type="number" step="0.25" min="0.25" max="12" id="set-nap-max" onchange="saveSettings()">
-           </div>
-       </div>
- 
-       <div class="card">
-           <h3>🌙 Horario y Gaps Nocturnos</h3>
-           <div class="setting-row">
-               <span>Inicio Horario Nocturno</span>
-               <input type="time" id="set-night-start" onchange="saveSettings()">
-           </div>
-           <div class="setting-row">
-               <span>Fin Horario Nocturno</span>
-               <input type="time" id="set-night-end" onchange="saveSettings()">
-           </div>
-           <div class="setting-row">
-               <span>Horas entre Leche (Noche)</span>
-               <input type="number" step="0.5" min="0.5" max="14" id="set-night-milk" onchange="saveSettings()">
-           </div>
-           <div class="setting-row">
-               <span>Gap Sueño Nocturno (Horas)</span>
-               <input type="number" step="0.5" min="0.5" max="14" id="set-night-nap" onchange="saveSettings()">
-           </div>
-       </div>
-   </div>
- 
-   <!-- MODAL 1: REGISTRAR / EDITAR LECHE -->
-   <div id="modal-milk" class="modal-backdrop hidden">
-       <div class="bottom-sheet">
-           <h3 class="sheet-title" id="milk-modal-title">🍼 Registrar Toma de Leche</h3>
-           <div style="margin-top:14px;">
-               <div class="big-segmented">
-                   <button class="seg-btn active" id="btn-milk-breast" onclick="selectMilkType('Leche Materna')">Leche Materna</button>
-                   <button class="seg-btn" id="btn-milk-formula" onclick="selectMilkType('Fórmula')">Fórmula</button>
-               </div>
-               <label class="field-label">Hora de la toma</label>
-               <input type="time" id="input-milk-time" class="big-input">
-               <label class="field-label">Comentarios (opcional)</label>
-               <textarea id="input-milk-comment" class="comment-area" placeholder="Ej: Tomó súper bien, quedó con un poco de sueño..."></textarea>
-               <div class="sheet-actions">
-                   <button class="btn-cancel" onclick="closeModals()">Cancelar</button>
-                   <button class="btn-save" onclick="confirmMilk()">Guardar</button>
-               </div>
-           </div>
-       </div>
-   </div>
- 
-   <!-- MODAL 2: REGISTRAR / EDITAR SIESTA -->
-   <div id="modal-nap" class="modal-backdrop hidden">
-       <div class="bottom-sheet">
-           <h3 class="sheet-title" id="nap-modal-title">☁️ Registrar Siesta</h3>
-           <div style="margin-top:14px;">
-               <div class="big-segmented" id="nap-mode-selector">
-                   <button class="seg-btn active" id="btn-nap-start-only" onclick="setNapMode('startOnly')">😴 Se durmió ahora</button>
-                   <button class="seg-btn" id="btn-nap-complete" onclick="setNapMode('complete')">✅ Inicio y Fin</button>
-               </div>
-               <div id="nap-start-wrapper">
-                   <label class="field-label">Hora de Inicio (Se durmió)</label>
-                   <input type="time" id="input-nap-start" class="big-input">
-               </div>
-               <div id="nap-end-wrapper" class="hidden">
-                   <label class="field-label">Hora de Fin (Despertó)</label>
-                   <input type="time" id="input-nap-end" class="big-input">
-               </div>
-               <label class="field-label">Comentarios (opcional)</label>
-               <textarea id="input-nap-comment" class="comment-area" placeholder="Ej: Se durmió en brazos, costó que conciliara el sueño..."></textarea>
-               <div class="sheet-actions">
-                   <button class="btn-cancel" onclick="closeModals()">Cancelar</button>
-                   <button class="btn-save" onclick="confirmNap()">Guardar</button>
-               </div>
-           </div>
-       </div>
-   </div>
- 
-   <!-- MODAL 3: REGISTRAR / EDITAR COMIDA -->
-   <div id="modal-food" class="modal-backdrop hidden">
-       <div class="bottom-sheet">
-           <h3 class="sheet-title" id="food-modal-title">🥄 Registrar Comida</h3>
-           <div style="margin-top:14px;">
-               <label class="field-label">¿Qué comió? (Texto libre)</label>
-               <input type="text" id="input-food-name" class="big-input" placeholder="Ej: Papilla de verduras con pollo" style="font-size:17px;">
- 
-               <label class="field-label">Unidad de medida (Por defecto mg)</label>
-               <div class="unit-pills">
-                   <button type="button" class="unit-btn active" id="unit-mg" onclick="selectFoodUnit('mg')">mg</button>
-                   <button type="button" class="unit-btn" id="unit-g" onclick="selectFoodUnit('g')">g</button>
-                   <button type="button" class="unit-btn" id="unit-kg" onclick="selectFoodUnit('kg')">kg</button>
-                   <button type="button" class="unit-btn" id="unit-ml" onclick="selectFoodUnit('ml')">ml</button>
-                   <button type="button" class="unit-btn" id="unit-oz" onclick="selectFoodUnit('oz')">oz</button>
-               </div>
- 
-               <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                   <div>
-                       <label class="field-label">Cantidad (<span id="food-unit-label">mg</span>)</label>
-                       <input type="number" step="any" id="input-food-amount" class="big-input" placeholder="300">
-                   </div>
-                   <div>
-                       <label class="field-label">Hora de comida</label>
-                       <input type="time" id="input-food-time" class="big-input">
-                   </div>
-               </div>
- 
-               <label class="field-label">Comentarios (opcional)</label>
-               <textarea id="input-food-comment" class="comment-area" placeholder="Ej: Le encantó la papilla, comió todo sin problema..."></textarea>
- 
-               <div class="sheet-actions">
-                   <button class="btn-cancel" onclick="closeModals()">Cancelar</button>
-                   <button class="btn-save" onclick="confirmFood()">Guardar</button>
-               </div>
-           </div>
-       </div>
-   </div>
- 
-   <!-- MODAL 4: VISTA DE INFORMACIÓN DEL ÍTEM + BOTÓN LÁPIZ (✏️) PARA EDITAR -->
-   <div id="modal-detail" class="modal-backdrop hidden">
-       <div class="bottom-sheet">
-           <div class="sheet-header">
-               <button class="icon-btn" onclick="closeModals()" title="Cerrar">✕</button>
-               <h3 class="sheet-title" id="detail-modal-title">Detalle del Registro</h3>
-               <button class="icon-btn" onclick="switchToEditFromDetail()" title="Editar registro">✏️</button>
-           </div>
- 
-           <div class="detail-box" id="detail-info-rows"></div>
- 
-           <label class="field-label">📝 Comentarios registrados</label>
-           <div class="detail-comment-box" id="detail-comment-text"></div>
- 
-           <div class="sheet-actions">
-               <button class="btn-delete" onclick="deleteCurrentDetailItem()">🗑️ Borrar</button>
-               <button class="btn-cancel" onclick="closeModals()">Cerrar</button>
-               <button class="btn-save" onclick="switchToEditFromDetail()">✏️ Editar</button>
-           </div>
-       </div>
-   </div>
- 
-   <!-- MODAL 5: NUEVO PERFIL DE HIJO -->
-   <div id="modal-profile" class="modal-backdrop hidden">
-       <div class="bottom-sheet">
-           <h3 class="sheet-title" style="margin-bottom:14px;">👶 Nuevo Perfil de Hijo</h3>
-           <label class="field-label">Nombre de tu hijo/a</label>
-           <input type="text" id="input-profile-name" class="big-input" placeholder="Ej: Mateo">
-           <div class="sheet-actions">
-               <button class="btn-cancel" onclick="closeModals()">Cancelar</button>
-               <button class="btn-save" onclick="confirmNewProfile()">Crear Perfil</button>
-           </div>
-       </div>
-   </div>
- 
-   <!-- Barra de Navegación Inferior -->
-   <div class="tab-bar">
-       <button class="tab-btn active" id="tab-home" onclick="switchTab('home')">Hoy</button>
-       <button class="tab-btn" id="tab-calendar" onclick="switchTab('calendar')">Calendario</button>
-       <button class="tab-btn" id="tab-stats" onclick="switchTab('stats')">Estadísticas</button>
-       <button class="tab-btn" id="tab-settings" onclick="switchTab('settings')">Ajustes</button>
-   </div>
- 
-   <script>
-       function getLocalTodayISO() {
-           const d = new Date();
-           const y = d.getFullYear();
-           const m = String(d.getMonth() + 1).padStart(2, '0');
-           const day = String(d.getDate()).padStart(2, '0');
-           return `${y}-${m}-${day}`;
-       }
- 
-       let todayISO = getLocalTodayISO();
-       let currentMilkType = 'Leche Materna';
-       let currentNapMode = 'startOnly';
-       let currentFoodUnit = 'mg';
-       let finishingNapRef = null; // { dateISO, index }
-       let editingItemRef = null;  // { dateISO, category: 'feeds'|'naps'|'foods', index }
-       let viewingItemRef = null;  // { dateISO, category: 'feeds'|'naps'|'foods', index }
- 
-       let calYear = new Date().getFullYear();
-       let calMonth = new Date().getMonth();
-       let selectedCalDate = todayISO;
-       let statsRangeDays = 7;
- 
-       const defaultProfileData = () => ({
-           settings: {
-               dayMilkGap: 3.0,
-               dayNapGap: 2.0,
-               napDurationMin: 1.0,
-               napDurationMax: 2.0,
-               nightStart: '21:00',
-               nightEnd: '07:00',
-               nightMilkGap: 5.0,
-               nightNapGap: 4.0
-           },
-           days: {}
-       });
- 
-       let memoryFallback = null;
-       function loadDB() {
-           try { return JSON.parse(localStorage.getItem('babyOneHandDB')); }
-           catch (e) { return memoryFallback; }
-       }
- 
-       let state = loadDB() || {
-           activeChild: 'José Pedro',
-           profiles: {
-               'José Pedro': defaultProfileData(),
-               'Agustín': defaultProfileData()
-           }
-       };
- 
-       // Asegurar retrocompatibilidad con perfiles ya guardados
-       Object.keys(state.profiles).forEach(pName => {
-           const p = state.profiles[pName];
-           if (!p.settings) p.settings = defaultProfileData().settings;
-           if (p.settings.napDurationMin === undefined) p.settings.napDurationMin = 1.0;
-           if (p.settings.napDurationMax === undefined) p.settings.napDurationMax = 2.0;
-           if (!p.days) p.days = {};
-           Object.keys(p.days).forEach(dKey => {
-               if (!p.days[dKey].feeds) p.days[dKey].feeds = [];
-               if (!p.days[dKey].naps) p.days[dKey].naps = [];
-               if (!p.days[dKey].foods) p.days[dKey].foods = [];
-           });
-       });
- 
-       function saveState() {
-           try { localStorage.setItem('babyOneHandDB', JSON.stringify(state)); }
-           catch (e) { memoryFallback = state; }
-           renderAll();
-       }
- 
-       function getActiveProfile() {
-           return state.profiles[state.activeChild];
-       }
- 
-       function ensureDay(profile, dateISO) {
-           if (!profile.days[dateISO]) {
-               profile.days[dateISO] = { feeds: [], naps: [], foods: [] };
-           }
-           if (!profile.days[dateISO].foods) profile.days[dateISO].foods = [];
-           return profile.days[dateISO];
-       }
- 
-       function timeToMins(t) {
-           if (!t) return 0;
-           const [h, m] = t.split(':').map(Number);
-           return h * 60 + m;
-       }
- 
-       function minsToTime(m) {
-           const norm = ((Math.round(m) % 1440) + 1440) % 1440;
-           const hh = String(Math.floor(norm / 60)).padStart(2, '0');
-           const mm = String(norm % 60).padStart(2, '0');
-           return `${hh}:${mm}`;
-       }
- 
-       function formatDDMM(iso) {
-           const parts = iso.split('-');
-           return `${parts[2]}/${parts[1]}`;
-       }
- 
-       function escapeHTML(str) {
-           if (!str) return '';
-           return str.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-       }
- 
-       // Verifica si una hora específica (HH:MM) está en horario nocturno o diurno
-       function isNightTime(timeStr, settings) {
-           const m = timeToMins(timeStr);
-           const start = timeToMins(settings.nightStart);
-           const end = timeToMins(settings.nightEnd);
-           if (start > end) {
-               return m >= start || m < end;
-           }
-           return m >= start && m < end;
-       }
- 
-       // Convierte fecha ISO + HH:MM en timestamp real para comparar sin errores entre días
-       function toTimestamp(dateISO, timeStr) {
-           const [y, mo, d] = dateISO.split('-').map(Number);
-           const [h, mi] = (timeStr || '00:00').split(':').map(Number);
-           return new Date(y, mo - 1, d, h, mi, 0, 0).getTime();
-       }
- 
-       // Busca la última toma de leche real en el historial del perfil activo
-       function findLatestFeed(prof) {
-           let best = null;
-           Object.keys(prof.days).forEach(dISO => {
-               (prof.days[dISO].feeds || []).forEach((f, idx) => {
-                   if (!f.time) return;
-                   const ts = toTimestamp(dISO, f.time);
-                   if (!best || ts >= best.ts) {
-                       best = { dateISO: dISO, index: idx, item: f, ts };
-                   }
-               });
-           });
-           return best;
-       }
- 
-       // Busca si hay alguna siesta en curso (sin hora de fin)
-       function findOngoingNap(prof) {
-           let open = null;
-           Object.keys(prof.days).sort().forEach(dISO => {
-               (prof.days[dISO].naps || []).forEach((n, idx) => {
-                   if (n.start && !n.end) {
-                       open = { dateISO: dISO, index: idx, item: n };
-                   }
-               });
-           });
-           return open;
-       }
- 
-       // Busca la última siesta FINALIZADA ordenando estrictamente por la hora de despertada (nap.end)
-       function findLatestCompletedNap(prof) {
-           let best = null;
-           Object.keys(prof.days).forEach(dISO => {
-               (prof.days[dISO].naps || []).forEach((n, idx) => {
-                   if (!n.start || !n.end) return;
-                   let endTs = toTimestamp(dISO, n.end);
-                   // Si la hora de fin es menor que la de inicio (cruzó la medianoche), sumar 1 día al timestamp de fin
-                   if (timeToMins(n.end) < timeToMins(n.start)) {
-                       endTs += 86400000;
-                   }
-                   if (!best || endTs >= best.endTs) {
-                       best = { dateISO: dISO, index: idx, item: n, endTs };
-                   }
-               });
-           });
-           return best;
-       }
- 
-       function renderProfiles() {
-           const bar = document.getElementById('profile-bar');
-           bar.innerHTML = '';
-           Object.keys(state.profiles).forEach(name => {
-               const btn = document.createElement('button');
-               btn.className = `profile-pill ${name === state.activeChild ? 'active' : ''}`;
-               btn.textContent = `👶 ${name}`;
-               btn.onclick = () => {
-                   state.activeChild = name;
-                   saveState();
-               };
-               bar.appendChild(btn);
-           });
-           const addBtn = document.createElement('button');
-           addBtn.className = 'profile-pill add-btn';
-           addBtn.textContent = '+ Hijo';
-           addBtn.onclick = () => {
-               document.getElementById('input-profile-name').value = '';
-               document.getElementById('modal-profile').classList.remove('hidden');
-           };
-           bar.appendChild(addBtn);
-       }
- 
-       function confirmNewProfile() {
-           const nameInput = document.getElementById('input-profile-name').value.trim();
-           if (!nameInput) return;
-           if (!state.profiles[nameInput]) {
-               state.profiles[nameInput] = defaultProfileData();
-           }
-           state.activeChild = nameInput;
-           closeModals();
-           saveState();
-       }
- 
-       function renderHome() {
-           todayISO = getLocalTodayISO();
-           const prof = getActiveProfile();
-           const s = prof.settings;
-           const day = ensureDay(prof, todayISO);
-           document.getElementById('today-date-title').textContent = formatDDMM(todayISO);
- 
-           // 1. PROYECCIÓN DE PRÓXIMA LECHE (Basada en la última toma real)
-           const latestFeed = findLatestFeed(prof);
-           const milkTimeEl = document.getElementById('next-milk-time');
-           const milkBadgeEl = document.getElementById('next-milk-badge');
- 
-           if (latestFeed) {
-               const night = isNightTime(latestFeed.item.time, s);
-               const gapHours = night ? s.nightMilkGap : s.dayMilkGap;
-               const nextMins = timeToMins(latestFeed.item.time) + gapHours * 60;
-               const nextTimeStr = minsToTime(nextMins);
-               const nextTimestamp = latestFeed.ts + gapHours * 3600000;
-               const isOverdue = Date.now() > nextTimestamp;
- 
-               milkTimeEl.textContent = nextTimeStr;
-               milkBadgeEl.textContent = isOverdue
-                   ? `⏰ ¡Ya le toca! (${ night ? 'Gap Noche' : 'Gap Día' } ${gapHours}h)`
-                   : (night ? `🌙 Gap Noche (${gapHours}h)` : `☀️ Gap Día (${gapHours}h)`);
-           } else {
-               milkTimeEl.textContent = '--:--';
-               milkBadgeEl.textContent = `Gap Día (${s.dayMilkGap}h)`;
-           }
- 
-           // 2. PROYECCIÓN DE SIESTA O HORA DE DESPERTAR PROYECTADA
-           const ongoingNap = findOngoingNap(prof);
-           const banner = document.getElementById('ongoing-nap-container');
-           const napLabelEl = document.getElementById('next-nap-label');
-           const napTimeEl = document.getElementById('next-nap-time');
-           const napBadgeEl = document.getElementById('next-nap-badge');
- 
-           if (ongoingNap) {
-               // Mientras duerme: Mostrar rango de hora proyectada de despertada según ajustes (min y max)
-               banner.classList.remove('hidden');
-               document.getElementById('ongoing-nap-start').textContent = ongoingNap.item.start;
-               finishingNapRef = { dateISO: ongoingNap.dateISO, index: ongoingNap.index };
- 
-               const startM = timeToMins(ongoingNap.item.start);
-               const minWakeStr = minsToTime(startM + (s.napDurationMin || 1) * 60);
-               const maxWakeStr = minsToTime(startM + (s.napDurationMax || 2) * 60);
- 
-               napLabelEl.textContent = 'Despertar Proyectado';
-               napTimeEl.textContent = `${minWakeStr} - ${maxWakeStr}`;
-               napTimeEl.classList.add('range-text');
-               napBadgeEl.textContent = `😴 Entre ${s.napDurationMin}h y ${s.napDurationMax}h`;
-           } else {
-               banner.classList.add('hidden');
-               finishingNapRef = null;
-               napLabelEl.textContent = 'Próxima Siesta';
-               napTimeEl.classList.remove('range-text');
- 
-               // Toma SIEMPRE la hora de finalización (end) de la última siesta para evaluar Día vs Noche
-               const latestNap = findLatestCompletedNap(prof);
-               if (latestNap) {
-                   const wakeTimeStr = latestNap.item.end;
-                   const night = isNightTime(wakeTimeStr, s); // Evalúa la hora en que DESPERTÓ, no en la que inició
-                   const gapHours = night ? s.nightNapGap : s.dayNapGap;
-                   const nextNapTimeStr = minsToTime(timeToMins(wakeTimeStr) + gapHours * 60);
-                   const nextNapTs = latestNap.endTs + gapHours * 3600000;
-                   const isOverdue = Date.now() > nextNapTs;
- 
-                   napTimeEl.textContent = nextNapTimeStr;
-                   napBadgeEl.textContent = isOverdue
-                       ? `⏰ ¡Ya le toca! (${night ? 'Gap Noche' : 'Gap Día'} ${gapHours}h)`
-                       : (night ? `🌙 Gap Noche (${gapHours}h desde ${wakeTimeStr})` : `☀️ Gap Día (${gapHours}h desde ${wakeTimeStr})`);
-               } else {
-                   napTimeEl.textContent = '--:--';
-                   napBadgeEl.textContent = `Gap Día (${s.dayNapGap}h)`;
-               }
-           }
- 
-           // 3. LISTA CRONOLÓGICA DE HOY CON VISTA PREVIA DE COMENTARIOS
-           renderDayItemsList(todayISO, 'today-list', `Sin registros hoy para ${state.activeChild}.`);
-       }
- 
-       function renderDayItemsList(dateISO, containerId, emptyMsg) {
-           const prof = getActiveProfile();
-           const day = ensureDay(prof, dateISO);
-           const listEl = document.getElementById(containerId);
- 
-           let combined = [];
-           day.feeds.forEach((f, idx) => {
-               combined.push({
-                   sortMins: timeToMins(f.time),
-                   category: 'feeds',
-                   index: idx,
-                   data: f
-               });
-           });
-           day.naps.forEach((n, idx) => {
-               combined.push({
-                   sortMins: timeToMins(n.start),
-                   category: 'naps',
-                   index: idx,
-                   data: n
-               });
-           });
-           day.foods.forEach((fo, idx) => {
-               combined.push({
-                   sortMins: timeToMins(fo.time),
-                   category: 'foods',
-                   index: idx,
-                   data: fo
-               });
-           });
- 
-           combined.sort((a, b) => a.sortMins - b.sortMins);
- 
-           if (!combined.length) {
-               listEl.innerHTML = `<p style="color:var(--text-muted); text-align:center; margin:8px 0;">${emptyMsg}</p>`;
-               return;
-           }
- 
-           let html = '';
-           combined.forEach(entry => {
-               const { category, index, data } = entry;
-               const commentPreview = data.comment && data.comment.trim()
-                   ? `<div class="item-comment-preview">💬 ${escapeHTML(data.comment.trim())}</div>`
-                   : '';
- 
-               if (category === 'feeds') {
-                   html += `<div class="today-item type-feed" onclick="openItemDetail('${dateISO}', 'feeds', ${index})">
-                       <div class="item-main">
-                           <div class="item-title">🍼 <strong>${data.time}</strong> • ${escapeHTML(data.type)}</div>
-                           ${commentPreview}
-                       </div>
-                       <span class="item-chevron">›</span>
-                   </div>`;
-               } else if (category === 'naps') {
-                   if (data.end) {
-                       html += `<div class="today-item type-nap" onclick="openItemDetail('${dateISO}', 'naps', ${index})">
-                           <div class="item-main">
-                               <div class="item-title">☁️ <strong>${data.start} a ${data.end}</strong> • Siesta</div>
-                               ${commentPreview}
-                           </div>
-                           <span class="item-chevron">›</span>
-                       </div>`;
-                   } else {
-                       html += `<div class="today-item type-nap" onclick="openItemDetail('${dateISO}', 'naps', ${index})">
-                           <div class="item-main">
-                               <div class="item-title">😴 <strong>Inició ${data.start}</strong> • Durmiendo...</div>
-                               ${commentPreview}
-                           </div>
-                           <button class="finish-inline-btn" onclick="event.stopPropagation(); openFinishNapModal('${dateISO}', ${index})">☀️ Despertó</button>
-                       </div>`;
-                   }
-               } else if (category === 'foods') {
-                   html += `<div class="today-item type-food" onclick="openItemDetail('${dateISO}', 'foods', ${index})">
-                       <div class="item-main">
-                           <div class="item-title">🥄 <strong>${data.time}</strong> • ${escapeHTML(data.foodType)} (${data.amount} ${data.unit})</div>
-                           ${commentPreview}
-                       </div>
-                       <span class="item-chevron">›</span>
-                   </div>`;
-               }
-           });
- 
-           listEl.innerHTML = html;
-       }
- 
-       // Vista de Información de un Ítem y Botón Lápiz (✏️) para Editar
-       function openItemDetail(dateISO, category, index) {
-           viewingItemRef = { dateISO, category, index };
-           const prof = getActiveProfile();
-           const item = prof.days[dateISO][category][index];
-           const infoBox = document.getElementById('detail-info-rows');
-           const commentBox = document.getElementById('detail-comment-text');
- 
-           if (category === 'feeds') {
-               document.getElementById('detail-modal-title').textContent = '🍼 Toma de Leche';
-               infoBox.innerHTML = `
-                   <div class="detail-row"><span>Fecha</span><strong>${formatDDMM(dateISO)}</strong></div>
-                   <div class="detail-row"><span>Hora</span><strong>${item.time}</strong></div>
-                   <div class="detail-row"><span>Tipo</span><strong>${escapeHTML(item.type)}</strong></div>
-               `;
-           } else if (category === 'naps') {
-               document.getElementById('detail-modal-title').textContent = '☁️ Registro de Siesta';
-               let durText = 'En curso';
-               if (item.end) {
-                   const sM = timeToMins(item.start);
-                   const eM = timeToMins(item.end);
-                   const diff = eM >= sM ? (eM - sM) : (1440 - sM + eM);
-                   durText = `${(diff / 60).toFixed(1)} horas (${diff} min)`;
-               }
-               infoBox.innerHTML = `
-                   <div class="detail-row"><span>Fecha</span><strong>${formatDDMM(dateISO)}</strong></div>
-                   <div class="detail-row"><span>Inicio (Se durmió)</span><strong>${item.start}</strong></div>
-                   <div class="detail-row"><span>Fin (Despertó)</span><strong>${item.end || 'Durmiendo...'}</strong></div>
-                   <div class="detail-row"><span>Duración</span><strong>${durText}</strong></div>
-               `;
-           } else if (category === 'foods') {
-               document.getElementById('detail-modal-title').textContent = '🥄 Registro de Comida';
-               infoBox.innerHTML = `
-                   <div class="detail-row"><span>Fecha</span><strong>${formatDDMM(dateISO)}</strong></div>
-                   <div class="detail-row"><span>Hora</span><strong>${item.time}</strong></div>
-                   <div class="detail-row"><span>Comida</span><strong>${escapeHTML(item.foodType)}</strong></div>
-                   <div class="detail-row"><span>Cantidad dada</span><strong>${item.amount} ${item.unit}</strong></div>
-               `;
-           }
- 
-           if (item.comment && item.comment.trim()) {
-               commentBox.textContent = item.comment.trim();
-               commentBox.style.color = 'var(--text-dark)';
-               commentBox.style.fontStyle = 'normal';
-           } else {
-               commentBox.textContent = 'Sin comentarios adicionales. Toca el ícono de lápiz (✏️) arriba a la derecha si quieres agregar una nota.';
-               commentBox.style.color = 'var(--text-muted)';
-               commentBox.style.fontStyle = 'italic';
-           }
- 
-           document.getElementById('modal-detail').classList.remove('hidden');
-       }
- 
-       function deleteCurrentDetailItem() {
-           if (!viewingItemRef) return;
-           const { dateISO, category, index } = viewingItemRef;
-           getActiveProfile().days[dateISO][category].splice(index, 1);
-           closeModals();
-           saveState();
-       }
- 
-       function switchToEditFromDetail() {
-           if (!viewingItemRef) return;
-           const { dateISO, category, index } = viewingItemRef;
-           editingItemRef = { dateISO, category, index };
-           const item = getActiveProfile().days[dateISO][category][index];
-           document.getElementById('modal-detail').classList.add('hidden');
- 
-           if (category === 'feeds') {
-               document.getElementById('milk-modal-title').textContent = '✏️ Editar Toma de Leche';
-               selectMilkType(item.type || 'Leche Materna');
-               document.getElementById('input-milk-time').value = item.time || nowHHMM();
-               document.getElementById('input-milk-comment').value = item.comment || '';
-               document.getElementById('modal-milk').classList.remove('hidden');
-           } else if (category === 'naps') {
-               finishingNapRef = null;
-               document.getElementById('nap-modal-title').textContent = '✏️ Editar Siesta';
-               document.getElementById('nap-mode-selector').classList.remove('hidden');
-               setNapMode(item.end ? 'complete' : 'startOnly');
-               document.getElementById('input-nap-start').value = item.start || nowHHMM();
-               document.getElementById('input-nap-end').value = item.end || nowHHMM();
-               document.getElementById('input-nap-comment').value = item.comment || '';
-               document.getElementById('modal-nap').classList.remove('hidden');
-           } else if (category === 'foods') {
-               document.getElementById('food-modal-title').textContent = '✏️ Editar Comida';
-               document.getElementById('input-food-name').value = item.foodType || '';
-               selectFoodUnit(item.unit || 'mg');
-               document.getElementById('input-food-amount').value = item.amount || '';
-               document.getElementById('input-food-time').value = item.time || nowHHMM();
-               document.getElementById('input-food-comment').value = item.comment || '';
-               document.getElementById('modal-food').classList.remove('hidden');
-           }
-       }
- 
-       function nowHHMM() {
-           return new Date().toTimeString().slice(0, 5);
-       }
- 
-       // Modal Leche
-       function openMilkModal() {
-           editingItemRef = null;
-           document.getElementById('milk-modal-title').textContent = '🍼 Registrar Toma de Leche';
-           selectMilkType('Leche Materna');
-           document.getElementById('input-milk-time').value = nowHHMM();
-           document.getElementById('input-milk-comment').value = '';
-           document.getElementById('modal-milk').classList.remove('hidden');
-       }
- 
-       function selectMilkType(type) {
-           currentMilkType = type;
-           document.getElementById('btn-milk-breast').classList.toggle('active', type === 'Leche Materna');
-           document.getElementById('btn-milk-formula').classList.toggle('active', type === 'Fórmula');
-       }
- 
-       function confirmMilk() {
-           const t = document.getElementById('input-milk-time').value;
-           if (!t) return;
-           const comment = document.getElementById('input-milk-comment').value.trim();
-           const prof = getActiveProfile();
- 
-           if (editingItemRef && editingItemRef.category === 'feeds') {
-               const targetDay = ensureDay(prof, editingItemRef.dateISO);
-               targetDay.feeds[editingItemRef.index] = { time: t, type: currentMilkType, comment };
-               targetDay.feeds.sort((a, b) => timeToMins(a.time) - timeToMins(b.time));
-           } else {
-               const day = ensureDay(prof, getLocalTodayISO());
-               day.feeds.push({ time: t, type: currentMilkType, comment });
-               day.feeds.sort((a, b) => timeToMins(a.time) - timeToMins(b.time));
-           }
-           closeModals();
-           saveState();
-       }
- 
-       // Modal Siesta
-       function openNapModal() {
-           editingItemRef = null;
-           finishingNapRef = null;
-           document.getElementById('nap-modal-title').textContent = '☁️ Registrar Siesta';
-           document.getElementById('nap-mode-selector').classList.remove('hidden');
-           setNapMode('startOnly');
-           document.getElementById('input-nap-start').value = nowHHMM();
-           document.getElementById('input-nap-end').value = nowHHMM();
-           document.getElementById('input-nap-comment').value = '';
-           document.getElementById('modal-nap').classList.remove('hidden');
-       }
- 
-       function setNapMode(mode) {
-           currentNapMode = mode;
-           document.getElementById('btn-nap-start-only').classList.toggle('active', mode === 'startOnly');
-           document.getElementById('btn-nap-complete').classList.toggle('active', mode === 'complete');
-           document.getElementById('nap-start-wrapper').classList.remove('hidden');
-           document.getElementById('nap-end-wrapper').classList.toggle('hidden', mode === 'startOnly');
-       }
- 
-       function openFinishNapModal(dateISO, idx) {
-           editingItemRef = null;
-           const prof = getActiveProfile();
-           let targetRef = finishingNapRef;
-           if (dateISO !== undefined && idx !== undefined) {
-               targetRef = { dateISO, index: idx };
-           }
-           if (!targetRef) return;
-           finishingNapRef = targetRef;
-           const existingNap = prof.days[targetRef.dateISO].naps[targetRef.index];
- 
-           document.getElementById('nap-modal-title').textContent = '☀️ Hora en que Despertó';
-           document.getElementById('nap-mode-selector').classList.add('hidden');
-           document.getElementById('nap-start-wrapper').classList.add('hidden');
-           document.getElementById('nap-end-wrapper').classList.remove('hidden');
-           document.getElementById('input-nap-end').value = nowHHMM();
-           document.getElementById('input-nap-comment').value = existingNap.comment || '';
-           document.getElementById('modal-nap').classList.remove('hidden');
-       }
- 
-       function confirmNap() {
-           const prof = getActiveProfile();
-           const comment = document.getElementById('input-nap-comment').value.trim();
- 
-           if (editingItemRef && editingItemRef.category === 'naps') {
-               const targetDay = ensureDay(prof, editingItemRef.dateISO);
-               const startVal = document.getElementById('input-nap-start').value;
-               const endVal = currentNapMode === 'complete' ? document.getElementById('input-nap-end').value : null;
-               targetDay.naps[editingItemRef.index] = { start: startVal, end: endVal, comment };
-               targetDay.naps.sort((a, b) => timeToMins(a.start) - timeToMins(b.start));
-           } else if (finishingNapRef !== null) {
-               const targetDay = ensureDay(prof, finishingNapRef.dateISO);
-               targetDay.naps[finishingNapRef.index].end = document.getElementById('input-nap-end').value;
-               targetDay.naps[finishingNapRef.index].comment = comment;
-           } else {
-               const day = ensureDay(prof, getLocalTodayISO());
-               if (currentNapMode === 'startOnly') {
-                   day.naps.push({ start: document.getElementById('input-nap-start').value, end: null, comment });
-               } else {
-                   day.naps.push({
-                       start: document.getElementById('input-nap-start').value,
-                       end: document.getElementById('input-nap-end').value,
-                       comment
-                   });
-               }
-               day.naps.sort((a, b) => timeToMins(a.start) - timeToMins(b.start));
-           }
-           closeModals();
-           saveState();
-       }
- 
-       // Modal Comida (Con mg por defecto y texto libre)
-       function openFoodModal() {
-           editingItemRef = null;
-           document.getElementById('food-modal-title').textContent = '🥄 Registrar Comida';
-           document.getElementById('input-food-name').value = '';
-           selectFoodUnit('mg'); // Por defecto mg
-           document.getElementById('input-food-amount').value = '';
-           document.getElementById('input-food-time').value = nowHHMM();
-           document.getElementById('input-food-comment').value = '';
-           document.getElementById('modal-food').classList.remove('hidden');
-       }
- 
-       function selectFoodUnit(unit) {
-           currentFoodUnit = unit;
-           document.getElementById('food-unit-label').textContent = unit;
-           ['mg', 'g', 'kg', 'ml', 'oz'].forEach(u => {
-               document.getElementById(`unit-${u}`).classList.toggle('active', u === unit);
-           });
-       }
- 
-       function confirmFood() {
-           const foodType = document.getElementById('input-food-name').value.trim() || 'Comida';
-           const amount = parseFloat(document.getElementById('input-food-amount').value) || 0;
-           const time = document.getElementById('input-food-time').value;
-           const comment = document.getElementById('input-food-comment').value.trim();
-           if (!time) return;
- 
-           const prof = getActiveProfile();
-           if (editingItemRef && editingItemRef.category === 'foods') {
-               const targetDay = ensureDay(prof, editingItemRef.dateISO);
-               targetDay.foods[editingItemRef.index] = {
-                   time, foodType, amount, unit: currentFoodUnit, comment
-               };
-               targetDay.foods.sort((a, b) => timeToMins(a.time) - timeToMins(b.time));
-           } else {
-               const day = ensureDay(prof, getLocalTodayISO());
-               day.foods.push({
-                   time, foodType, amount, unit: currentFoodUnit, comment
-               });
-               day.foods.sort((a, b) => timeToMins(a.time) - timeToMins(b.time));
-           }
-           closeModals();
-           saveState();
-       }
- 
-       function closeModals() {
-           ['modal-milk', 'modal-nap', 'modal-food', 'modal-detail', 'modal-profile'].forEach(id => {
-               document.getElementById(id).classList.add('hidden');
-           });
-           editingItemRef = null;
-           viewingItemRef = null;
-       }
- 
-       // Calendario Mensual + Vista Estilo Google Calendar
-       const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
- 
-       function initCalendarSelectors() {
-           const mSel = document.getElementById('cal-month-select');
-           const ySel = document.getElementById('cal-year-select');
-           if (!mSel.options.length) {
-               monthNames.forEach((m, idx) => {
-                   const opt = document.createElement('option');
-                   opt.value = idx;
-                   opt.textContent = m;
-                   mSel.appendChild(opt);
-               });
-               for (let y = 2024; y <= 2030; y++) {
-                   const opt = document.createElement('option');
-                   opt.value = y;
-                   opt.textContent = y;
-                   ySel.appendChild(opt);
-               }
-           }
-           mSel.value = calMonth;
-           ySel.value = calYear;
-       }
- 
-       function onMonthYearSelect() {
-           calMonth = parseInt(document.getElementById('cal-month-select').value, 10);
-           calYear = parseInt(document.getElementById('cal-year-select').value, 10);
-           renderCalendar();
-       }
- 
-       function changeMonth(delta) {
-           calMonth += delta;
-           if (calMonth < 0) { calMonth = 11; calYear--; }
-           if (calMonth > 11) { calMonth = 0; calYear++; }
-           renderCalendar();
-       }
- 
-       function renderCalendar() {
-           initCalendarSelectors();
-           const grid = document.getElementById('cal-grid-body');
-           grid.innerHTML = '';
-           const firstDay = new Date(calYear, calMonth, 1).getDay();
-           const offset = (firstDay + 6) % 7;
-           const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
-           const prof = getActiveProfile();
- 
-           for (let i = 0; i < offset; i++) {
-               grid.appendChild(document.createElement('div'));
-           }
- 
-           for (let d = 1; d <= daysInMonth; d++) {
-               const iso = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-               const dayData = prof.days[iso];
-               const hasData = dayData && (
-                   (dayData.feeds && dayData.feeds.length > 0) ||
-                   (dayData.naps && dayData.naps.length > 0) ||
-                   (dayData.foods && dayData.foods.length > 0)
-               );
-               const cell = document.createElement('div');
-               cell.className = `cal-cell ${hasData ? 'has-data' : ''} ${iso === selectedCalDate ? 'selected' : ''}`;
-               cell.innerHTML = `<span>${d}</span>${hasData ? '<div class="cal-dot"></div>' : ''}`;
-               cell.onclick = () => {
-                   selectedCalDate = iso;
-                   renderCalendar();
-               };
-               grid.appendChild(cell);
-           }
- 
-           document.getElementById('selected-cal-date-label').textContent = formatDDMM(selectedCalDate);
-           renderDayItemsList(selectedCalDate, 'cal-day-items-list', 'Sin registros en esta fecha.');
- 
-           const timeline = document.getElementById('gcal-timeline');
-           timeline.innerHTML = '';
-           for (let h = 0; h < 24; h++) {
-               const row = document.createElement('div');
-               row.className = 'gcal-hour-row';
-               row.textContent = `${String(h).padStart(2,'0')}:00`;
-               timeline.appendChild(row);
-           }
- 
-           const selData = ensureDay(prof, selectedCalDate);
-           selData.feeds.forEach((f, idx) => {
-               const topPx = (timeToMins(f.time) / 60) * 36;
-               const ev = document.createElement('div');
-               ev.className = 'gcal-event milk';
-               ev.style.top = `${topPx}px`;
-               ev.textContent = `🍼 ${f.time} • ${f.type}${f.comment ? ' 💬' : ''}`;
-               ev.onclick = () => openItemDetail(selectedCalDate, 'feeds', idx);
-               timeline.appendChild(ev);
-           });
-           selData.foods.forEach((fo, idx) => {
-               const topPx = (timeToMins(fo.time) / 60) * 36;
-               const ev = document.createElement('div');
-               ev.className = 'gcal-event food';
-               ev.style.top = `${topPx}px`;
-               ev.textContent = `🥄 ${fo.time} • ${fo.foodType} (${fo.amount}${fo.unit})${fo.comment ? ' 💬' : ''}`;
-               ev.onclick = () => openItemDetail(selectedCalDate, 'foods', idx);
-               timeline.appendChild(ev);
-           });
-           selData.naps.forEach((n, idx) => {
-               const startM = timeToMins(n.start);
-               const endM = n.end ? timeToMins(n.end) : startM + 45;
-               const durationM = endM >= startM ? (endM - startM) : (1440 - startM + endM);
-               const topPx = (startM / 60) * 36;
-               const heightPx = Math.max(26, (durationM / 60) * 36);
-               const ev = document.createElement('div');
-               ev.className = 'gcal-event nap';
-               ev.style.top = `${topPx}px`;
-               ev.style.height = `${heightPx}px`;
-               ev.textContent = `☁️ Siesta (${n.start} - ${n.end || 'En curso'})${n.comment ? ' 💬' : ''}`;
-               ev.onclick = () => openItemDetail(selectedCalDate, 'naps', idx);
-               timeline.appendChild(ev);
-           });
-       }
- 
-       // Estadísticas (Leche, Siestas y Comidas)
-       function setStatsRange(days) {
-           statsRangeDays = days;
-           [7, 30, 365].forEach(d => {
-               document.getElementById(`range-${d}`).classList.toggle('active', d === days);
-           });
-           renderStats();
-       }
- 
-       function drawLineChart(svgId, labels, values, strokeColor, unit) {
-           const svg = document.getElementById(svgId);
-           if (!values.length) {
-               svg.innerHTML = '<text x="170" y="85" text-anchor="middle" fill="#8C8275" font-size="13">Agrega registros para ver la línea de tendencia</text>';
-               return;
-           }
-           const maxV = Math.max(...values, 4);
-           const minV = 0;
-           const w = 290, h = 110, padL = 25, padT = 22;
-           const pts = values.map((v, i) => {
-               const x = padL + (values.length === 1 ? w / 2 : (i / (values.length - 1)) * w);
-               const y = padT + h - ((v - minV) / (maxV - minV)) * h;
-               return { x, y, v, label: labels[i] };
-           });
- 
-           const polyPoints = pts.map(p => `${p.x},${p.y}`).join(' ');
-           let inner = `<polyline fill="none" stroke="${strokeColor}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" points="${polyPoints}" />`;
-           pts.forEach(p => {
-               inner += `<circle cx="${p.x}" cy="${p.y}" r="5" fill="${strokeColor}" />`;
-               inner += `<text x="${p.x}" y="${p.y - 8}" text-anchor="middle" font-size="10" fill="#4A4238" font-weight="bold">${p.v}${unit}</text>`;
-               inner += `<text x="${p.x}" y="${padT + h + 20}" text-anchor="middle" font-size="10" fill="#8C8275">${p.label}</text>`;
-           });
-           svg.innerHTML = inner;
-       }
- 
-       function renderStats() {
-           const prof = getActiveProfile();
-           const allKeys = Object.keys(prof.days)
-               .filter(k => {
-                   const d = prof.days[k];
-                   return (d.feeds && d.feeds.length > 0) ||
-                          (d.naps && d.naps.length > 0) ||
-                          (d.foods && d.foods.length > 0);
-               })
-               .sort()
-               .slice(-statsRangeDays);
- 
-           const labels = allKeys.map(formatDDMM);
- 
-           // 1. Gap promedio de leche por día
-           const avgMilkGaps = allKeys.map(k => {
-               const feeds = prof.days[k].feeds || [];
-               if (feeds.length < 2) return prof.settings.dayMilkGap;
-               let diffs = [];
-               for (let i = 1; i < feeds.length; i++) {
-                   diffs.push((timeToMins(feeds[i].time) - timeToMins(feeds[i-1].time)) / 60);
-               }
-               return Number((diffs.reduce((a,b)=>a+b,0) / diffs.length).toFixed(1));
-           });
- 
-           // 2. Horas de sueño por día
-           const totalSleepHours = allKeys.map(k => {
-               const naps = (prof.days[k].naps || []).filter(n => n.end);
-               const mins = naps.reduce((acc, n) => {
-                   const s = timeToMins(n.start);
-                   const e = timeToMins(n.end);
-                   return acc + (e >= s ? (e - s) : (1440 - s + e));
-               }, 0);
-               return Number((mins / 60).toFixed(1));
-           });
- 
-           // 3. Cantidad total de comida por día
-           const totalFoodAmounts = allKeys.map(k => {
-               const foods = prof.days[k].foods || [];
-               const sum = foods.reduce((acc, fo) => acc + (Number(fo.amount) || 0), 0);
-               return Math.round(sum);
-           });
- 
-           // KPIs globales del rango seleccionado
-           const globalMilkGap = avgMilkGaps.length
-               ? (avgMilkGaps.reduce((a,b)=>a+b,0) / avgMilkGaps.length).toFixed(1)
-               : '--';
-           document.getElementById('kpi-milk-gap').textContent = `${globalMilkGap} h`;
- 
-           let foodGapsAll = [];
-           let firstFoodMins = [];
-           let totalFoodCount = 0;
-           allKeys.forEach(k => {
-               const foods = prof.days[k].foods || [];
-               totalFoodCount += foods.length;
-               if (foods.length > 0) {
-                   firstFoodMins.push(timeToMins(foods[0].time));
-               }
-               for (let i = 1; i < foods.length; i++) {
-                   foodGapsAll.push((timeToMins(foods[i].time) - timeToMins(foods[i-1].time)) / 60);
-               }
-           });
- 
-           document.getElementById('kpi-food-gap').textContent = foodGapsAll.length
-               ? `${(foodGapsAll.reduce((a,b)=>a+b,0) / foodGapsAll.length).toFixed(1)} h`
-               : '-- h';
- 
-           document.getElementById('kpi-food-time').textContent = firstFoodMins.length
-               ? minsToTime(firstFoodMins.reduce((a,b)=>a+b,0) / firstFoodMins.length)
-               : '--:--';
- 
-           document.getElementById('kpi-food-count').textContent = allKeys.length
-               ? (totalFoodCount / allKeys.length).toFixed(1)
-               : '0';
- 
-           drawLineChart('chart-milk-gap', labels, avgMilkGaps, '#C98A8E', 'h');
-           drawLineChart('chart-sleep-hours', labels, totalSleepHours, '#6E9483', 'h');
-           drawLineChart('chart-food-amount', labels, totalFoodAmounts, '#D99B82', '');
-       }
- 
-       function loadSettingsInputs() {
-           const s = getActiveProfile().settings;
-           document.getElementById('set-day-milk').value = s.dayMilkGap;
-           document.getElementById('set-day-nap').value = s.dayNapGap;
-           document.getElementById('set-nap-min').value = s.napDurationMin ?? 1.0;
-           document.getElementById('set-nap-max').value = s.napDurationMax ?? 2.0;
-           document.getElementById('set-night-start').value = s.nightStart;
-           document.getElementById('set-night-end').value = s.nightEnd;
-           document.getElementById('set-night-milk').value = s.nightMilkGap;
-           document.getElementById('set-night-nap').value = s.nightNapGap;
-       }
- 
-       function saveSettings() {
-           const s = getActiveProfile().settings;
-           s.dayMilkGap = parseFloat(document.getElementById('set-day-milk').value) || 3;
-           s.dayNapGap = parseFloat(document.getElementById('set-day-nap').value) || 2;
-           s.napDurationMin = parseFloat(document.getElementById('set-nap-min').value) || 1;
-           s.napDurationMax = parseFloat(document.getElementById('set-nap-max').value) || 2;
-           s.nightStart = document.getElementById('set-night-start').value || '21:00';
-           s.nightEnd = document.getElementById('set-night-end').value || '07:00';
-           s.nightMilkGap = parseFloat(document.getElementById('set-night-milk').value) || 5;
-           s.nightNapGap = parseFloat(document.getElementById('set-night-nap').value) || 4;
-           saveState();
-       }
- 
-       function switchTab(tab) {
-           ['home', 'calendar', 'stats', 'settings'].forEach(t => {
-               document.getElementById(`view-${t}`).classList.toggle('hidden', t !== tab);
-               document.getElementById(`tab-${t}`).classList.toggle('active', t === tab);
-           });
-           renderAll();
-           if (tab === 'calendar') {
-               setTimeout(() => {
-                   const box = document.getElementById('gcal-scroll-box');
-                   if (box) box.scrollTop = 7 * 36;
-               }, 50);
-           }
-       }
- 
-       function renderAll() {
-           renderProfiles();
-           renderHome();
-           renderCalendar();
-           renderStats();
-           loadSettingsInputs();
-       }
- 
-       renderAll();
-       // Refresco automático cada 30 segundos para mantener las proyecciones al día
-       setInterval(renderHome, 30000);
-   </script>
+.tab-btn.active { background: var(--pale-pink); color: var(--text-dark); }
+.hidden { display: none !important; }
+<!-- Selector Superior de Perfiles -->
+<div class="profile-bar" id="profile-bar"></div>
+<!-- PESTAÑA 1: HOY -->
+<div id="view-home">
+<div class="predictions-grid">
+<div class="pred-box">
+<small id="next-milk-label">Próxima Leche</small>
+<strong id="next-milk-time">--:--</strong>
+<span class="mode-badge" id="next-milk-badge">Gap Día</span>
+</div>
+<div class="pred-box nap">
+<small id="next-nap-label">Próxima Siesta</small>
+<strong id="next-nap-time">--:--</strong>
+<span class="mode-badge" id="next-nap-badge">Gap Día</span>
+</div>
+</div>
+<!-- Banner siesta en curso -->
+<div id="ongoing-nap-container" class="ongoing-nap-banner hidden">
+<div style="display:flex; justify-content:space-between; align-items:center;">
+<span>😴 <strong>Durmiendo ahora</strong> (inició <span
+id="ongoing-nap-start"></span>)</span>
+</div>
+<button onclick="openFinishNapModal()">☀ Despertó (Registrar Fin)</button>
+</div>
+<!-- Botones Grandes -->
+<div class="big-actions">
+<button class="big-btn milk" onclick="openMilkModal()">🍼 Registrar
+Leche</button>
+<button class="big-btn nap" onclick="openNapModal()">☁ Registrar
+Siesta</button>
+<button class="big-btn food" onclick="openFoodModal()">🥄 Registrar
+Comida</button>
+</div>
+<!-- Lista del día -->
+<div class="card">
+<h3>📋 Lo que lleva hoy (<span id="today-date-title"></span>)</h3>
+<div id="today-list"></div>
+</div>
+</div>
+<!-- PESTAÑA 2: CALENDARIO -->
+<div id="view-calendar" class="hidden">
+<div class="card">
+<div class="cal-header">
+<button class="cal-nav-btn" onclick="changeMonth(-1)">‹</button>
+<div class="cal-select-group">
+<select id="cal-month-select" class="cal-select"
+onchange="onMonthYearSelect()"></select>
+<select id="cal-year-select" class="cal-select"
+onchange="onMonthYearSelect()"></select>
+</div>
+<button class="cal-nav-btn" onclick="changeMonth(1)">›</button>
+</div>
+<div class="cal-grid">
+<div class="cal-day-name">L</div><div class="cal-day-name">M</div>
+<div class="cal-day-name">M</div><div class="cal-day-name">J</div>
+<div class="cal-day-name">V</div><div class="cal-day-name">S</div>
+<div class="cal-day-name">D</div>
+</div>
+<div class="cal-grid" id="cal-grid-body"></div>
+</div>
+<div class="card">
+<h3>🗓 Registros del <span id="selected-cal-date-label"></span></h3>
+<div id="cal-day-items-list" style="margin-bottom:14px;"></div>
+<div class="gcal-timeline" id="gcal-scroll-box">
+<div class="gcal-canvas" id="gcal-timeline"></div>
+</div>
+</div>
+</div>
+<!-- PESTAÑA 3: ESTADÍSTICAS -->
+<div id="view-stats" class="hidden">
+<div class="range-pills">
+<button class="range-pill active" id="range-7" onclick="setStatsRange(7)">Última
+Semana</button>
+<button class="range-pill" id="range-30" onclick="setStatsRange(30)">Último
+Mes</button>
+<button class="range-pill" id="range-365" onclick="setStatsRange(365)">Último
+Año</button>
+</div>
+<div class="kpi-grid">
+<div class="kpi-card"><small>Gap Promedio Leche</small><strong
+id="kpi-milk-gap">-- h</strong></div>
+<div class="kpi-card"><small>Gap Promedio Comidas</small><strong
+id="kpi-food-gap">-- h</strong></div>
+<div class="kpi-card"><small>Hora Promedio 1ª Comida</small><strong
+id="kpi-food-time">--:--</strong></div>
+<div class="kpi-card"><small>Comidas Promedio / Día</small><strong
+id="kpi-food-count">0</strong></div>
+</div>
+<div class="card">
+<h3>🍼 Gap Promedio entre Leches (Horas)</h3>
+<svg class="line-chart" id="chart-milk-gap" viewBox="0 0 340 165"></svg>
+</div>
+<div class="card">
+<h3>☁ Horas de Sueño en Siestas (Día/Mes)</h3>
+<svg class="line-chart" id="chart-sleep-hours" viewBox="0 0 340 165"></svg>
+</div>
+<div class="card">
+<h3>🥄 Cantidad Total de Comida por Día</h3>
+<svg class="line-chart" id="chart-food-amount" viewBox="0 0 340 165"></svg>
+</div>
+</div>
+<!-- PESTAÑA 4: AJUSTES REESTRUCTURADOS EN 2 BLOQUES (DÍA Y NOCHE) -->
+<div id="view-settings" class="hidden">
+<!-- BLOQUE DÍA -->
+<div class="settings-block">
+<h4>☀ Ajustes Día</h4>
+<div class="setting-item">
+<div class="setting-label-row">
+<span>Horas despierto entre siestas</span>
+<input type="number" step="0.5" min="0.5" max="12" id="set-day-nap"
+onchange="saveSettings()">
+</div>
+<div class="setting-desc">Tiempo máximo que pasa despierto antes de que le
+toque su próxima siesta diurna.
+</div>
+</div>
+<div class="setting-item">
+<div class="setting-label-row">
+<span>Duración mín. de siesta (horas)</span>
+<input type="number" step="0.25" min="0.25" max="10" id="set-nap-min"
+onchange="saveSettings()">
+</div>
+<div class="setting-desc">Mínimo de horas que suele dormir en sus siestas de día
+(para el rango proyectado).
+</div>
+</div>
+<div class="setting-item">
+<div class="setting-label-row">
+<span>Duración máx. de siesta (horas)</span>
+<input type="number" step="0.25" min="0.25" max="12" id="set-nap-max"
+onchange="saveSettings()">
+</div>
+<div class="setting-desc">Máximo de horas que suele dormir en sus siestas de
+día.
+</div>
+</div>
+<div class="setting-item">
+<div class="setting-label-row">
+<span>Horas entre tomas de leche</span>
+<input type="number" step="0.5" min="0.5" max="12" id="set-day-milk"
+onchange="saveSettings()">
+</div>
+<div class="setting-desc">Intervalo regular de tiempo entre una papa y la
+siguiente durante el día.
+</div>
+</div>
+</div>
+<!-- BLOQUE NOCHE -->
+<div class="settings-block">
+<h4>🌙 Ajustes Noche</h4>
+<div class="setting-item">
+<div class="setting-label-row">
+<span>Inicio horario nocturno</span>
+<input type="time" id="set-night-start" onchange="saveSettings()">
+</div>
+<div class="setting-desc">Hora en que comienza la noche y se activa el régimen
+nocturno.
+</div>
+</div>
+<div class="setting-item">
+<div class="setting-label-row">
+<span>Fin horario nocturno</span>
+<input type="time" id="set-night-end" onchange="saveSettings()">
+</div>
+<div class="setting-desc">Hora en que finaliza la noche (mañana).
+</div>
+</div>
+<div class="setting-item">
+<div class="setting-label-row">
+<span>Duración mín. siesta nocturna</span>
+<input type="number" step="0.25" min="0.25" max="12" id="set-night-nap-min"
+onchange="saveSettings()">
+</div>
+<div class="setting-desc">Mínimo de horas del ciclo de sueño nocturno (se
+resetea automáticamente al despertar).
+</div>
+</div>
+<div class="setting-item">
+<div class="setting-label-row">
+<span>Duración máx. siesta nocturna</span>
+<input type="number" step="0.25" min="0.25" max="14" id="set-night-nap-max"
+onchange="saveSettings()">
+</div>
+<div class="setting-desc">Máximo de horas del ciclo de sueño nocturno.
+</div>
+</div>
+<div class="setting-item">
+<div class="setting-label-row">
+<span>Horas entre tomas de leche</span>
+<input type="number" step="0.5" min="0.5" max="14" id="set-night-milk"
+onchange="saveSettings()">
+</div>
+<div class="setting-desc">Intervalo de tiempo entre tomas de leche durante la
+noche.
+</div>
+</div>
+</div>
+</div>
+<!-- MODAL 1: LECHE -->
+<div id="modal-milk" class="modal-backdrop hidden">
+<div class="bottom-sheet">
+<h3 class="sheet-title" id="milk-modal-title">🍼 Registrar Toma de Leche</h3>
+<div style="margin-top:14px;">
+<div class="big-segmented">
+<button class="seg-btn active" id="btn-milk-breast"
+onclick="selectMilkType('Leche Materna')">Leche Materna</button>
+<button class="seg-btn" id="btn-milk-formula"
+onclick="selectMilkType('Fórmula')">Fórmula</button>
+</div>
+<label class="field-label">Hora de la toma</label>
+<input type="time" id="input-milk-time" class="big-input">
+<label class="field-label">Comentarios (opcional)</label>
+<textarea id="input-milk-comment" class="comment-area" placeholder="Ej: Tomó
+súper bien...
+"></textarea>
+<div class="sheet-actions">
+<button class="btn-cancel" onclick="closeModals()">Cancelar</button>
+<button class="btn-save" onclick="confirmMilk()">Guardar</button>
+</div>
+</div>
+</div>
+</div>
+<!-- MODAL 2: SIESTA -->
+<div id="modal-nap" class="modal-backdrop hidden">
+<div class="bottom-sheet">
+<h3 class="sheet-title" id="nap-modal-title">☁ Registrar Siesta</h3>
+<div style="margin-top:14px;">
+<div class="big-segmented" id="nap-mode-selector">
+<button class="seg-btn active" id="btn-nap-start-only"
+onclick="setNapMode('startOnly')">😴 Se durmió ahora</button>
+<button class="seg-btn" id="btn-nap-complete"
+onclick="setNapMode('complete')">✅ Inicio y Fin</button>
+</div>
+<div id="nap-start-wrapper">
+<label class="field-label">Hora de Inicio (Se durmió)</label>
+<input type="time" id="input-nap-start" class="big-input">
+</div>
+<div id="nap-end-wrapper" class="hidden">
+<label class="field-label">Hora de Fin (Despertó)</label>
+<input type="time" id="input-nap-end" class="big-input">
+</div>
+<label class="field-label">Comentarios (opcional)</label>
+<textarea id="input-nap-comment" class="comment-area" placeholder="Ej: Se
+durmió rápido...
+"></textarea>
+<div class="sheet-actions">
+<button class="btn-cancel" onclick="closeModals()">Cancelar</button>
+<button class="btn-save" onclick="confirmNap()">Guardar</button>
+</div>
+</div>
+</div>
+</div>
+<!-- MODAL 3: COMIDA -->
+<div id="modal-food" class="modal-backdrop hidden">
+<div class="bottom-sheet">
+<h3 class="sheet-title" id="food-modal-title">🥄 Registrar Comida</h3>
+<div style="margin-top:14px;">
+<label class="field-label">¿Qué comió? (Texto libre)</label>
+<input type="text" id="input-food-name" class="big-input" placeholder="Ej: Papilla
+de verduras" style="font-size:17px;">
+<label class="field-label">Unidad de medida (Por defecto mg)</label>
+<div class="unit-pills">
+<button type="button" class="unit-btn active" id="unit-mg"
+onclick="selectFoodUnit('mg')">mg</button>
+<button type="button" class="unit-btn" id="unit-g"
+onclick="selectFoodUnit('g')">g</button>
+<button type="button" class="unit-btn" id="unit-kg"
+onclick="selectFoodUnit('kg')">kg</button>
+<button type="button" class="unit-btn" id="unit-ml"
+onclick="selectFoodUnit('ml')">ml</button>
+<button type="button" class="unit-btn" id="unit-oz"
+onclick="selectFoodUnit('oz')">oz</button>
+</div>
+<div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+<div>
+<label class="field-label">Cantidad (<span
+id="food-unit-label">mg</span>)</label>
+<input type="number" step="any" id="input-food-amount" class="big-input"
+placeholder="300">
+</div>
+<div>
+<label class="field-label">Hora de comida</label>
+<input type="time" id="input-food-time" class="big-input">
+</div>
+</div>
+<label class="field-label">Comentarios (opcional)</label>
+<textarea id="input-food-comment" class="comment-area" placeholder="Ej: Le
+encantó...
+"></textarea>
+<div class="sheet-actions">
+<button class="btn-cancel" onclick="closeModals()">Cancelar</button>
+<button class="btn-save" onclick="confirmFood()">Guardar</button>
+</div>
+</div>
+</div>
+</div>
+<!-- MODAL 4: DETALLE / EDITAR -->
+<div id="modal-detail" class="modal-backdrop hidden">
+<div class="bottom-sheet">
+<div class="sheet-header">
+<button class="icon-btn" onclick="closeModals()" title="Cerrar">✕</button>
+<h3 class="sheet-title" id="detail-modal-title">Detalle del Registro</h3>
+<button class="icon-btn" onclick="switchToEditFromDetail()" title="Editar
+registro">✏</button>
+</div>
+<div class="detail-box" id="detail-info-rows"></div>
+<label class="field-label">📝 Comentarios registrados</label>
+<div class="detail-comment-box" id="detail-comment-text"></div>
+<div class="sheet-actions">
+<button class="btn-delete" onclick="deleteCurrentDetailItem()">🗑
+Borrar</button>
+</div>
+</div>
+</div>
+<button class="btn-cancel" onclick="closeModals()">Cerrar</button>
+<button class="btn-save" onclick="switchToEditFromDetail()">✏ Editar</button>
+<!-- MODAL 5: NUEVO PERFIL -->
+<div id="modal-profile" class="modal-backdrop hidden">
+<div class="bottom-sheet">
+<h3 class="sheet-title" style="margin-bottom:14px;">👶 Nuevo Perfil de Hijo</h3>
+<label class="field-label">Nombre de tu hijo/a</label>
+<input type="text" id="input-profile-name" class="big-input" placeholder="Ej: Mateo">
+<div class="sheet-actions">
+<button class="btn-cancel" onclick="closeModals()">Cancelar</button>
+<button class="btn-save" onclick="confirmNewProfile()">Crear Perfil</button>
+</div>
+</div>
+</div>
+<!-- Barra de Navegación -->
+<div class="tab-bar">
+<button class="tab-btn active" id="tab-home"
+onclick="switchTab('home')">Hoy</button>
+<button class="tab-btn" id="tab-calendar"
+onclick="switchTab('calendar')">Calendario</button>
+<button class="tab-btn" id="tab-stats"
+onclick="switchTab('stats')">Estadísticas</button>
+<button class="tab-btn" id="tab-settings"
+onclick="switchTab('settings')">Ajustes</button>
+</div>
+<script>
+function getLocalTodayISO() {
+const d = new Date();
+const y = d.getFullYear();
+const m = String(d.getMonth() + 1).padStart(2,
+const day = String(d.getDate()).padStart(2,
+'0');
+return
+`${y}-${m}-${day}`
+;
+'0');
+}
+let todayISO = getLocalTodayISO();
+let currentMilkType = 'Leche Materna';
+let currentNapMode = 'startOnly';
+let currentFoodUnit = 'mg';
+let finishingNapRef = null;
+let editingItemRef = null;
+let viewingItemRef = null;
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+let selectedCalDate = todayISO;
+let statsRangeDays = 7;
+const defaultProfileData = () => ({
+settings: {
+dayMilkGap: 3.0,
+dayNapGap: 2.0,
+napDurationMin: 1.0,
+napDurationMax: 2.0,
+nightStart: '21:00'
+,
+nightEnd: '07:00'
+,
+nightMilkGap: 5.0,
+nightNapMin: 1.5,
+nightNapMax: 3.0
+},
+days: {}
+});
+let memoryFallback = null;
+function loadDB() {
+try { return JSON.parse(localStorage.getItem('babyOneHandDB')); }
+catch (e) { return memoryFallback; }
+}
+let state = loadDB() || {
+activeChild: 'José Pedro'
+,
+profiles: {
+'José Pedro': defaultProfileData(),
+'Agustín': defaultProfileData()
+}
+};
+// Retrocompatibilidad con nombres nuevos y antiguos en settings
+Object.keys(state.profiles).forEach(pName => {
+const p = state.profiles[pName];
+if (!p.settings) p.settings = defaultProfileData().settings;
+if (p.settings.napDurationMin === undefined) p.settings.napDurationMin = 1.0;
+if (p.settings.napDurationMax === undefined) p.settings.napDurationMax = 2.0;
+if (p.settings.nightNapMin === undefined) p.settings.nightNapMin =
+p.settings.nightNapGap || 1.5;
+if (p.settings.nightNapMax === undefined) p.settings.nightNapMax =
+(p.settings.nightNapGap ? p.settings.nightNapGap + 1 : 3.0);
+if (!p.days) p.days = {};
+Object.keys(p.days).forEach(dKey => {
+if (!p.days[dKey].feeds) p.days[dKey].feeds = [];
+if (!p.days[dKey].naps) p.days[dKey].naps = [];
+if (!p.days[dKey].foods) p.days[dKey].foods = [];
+});
+});
+function saveState() {
+try { localStorage.setItem('babyOneHandDB'
+, JSON.stringify(state)); }
+catch (e) { memoryFallback = state; }
+renderAll();
+function getActiveProfile() {
+return state.profiles[state.activeChild];
+}
+}
+function ensureDay(profile, dateISO) {
+if (!profile.days[dateISO]) {
+profile.days[dateISO] = { feeds: [], naps: [], foods: [] };
+}
+if (!profile.days[dateISO].foods) profile.days[dateISO].foods = [];
+return profile.days[dateISO];
+}
+function timeToMins(t) {
+if (!t) return 0;
+const [h, m] = t.split(':').map(Number);
+return h * 60 + m;
+}
+function minsToTime(m) {
+const norm = ((Math.round(m) % 1440) + 1440) % 1440;
+const hh = String(Math.floor(norm / 60)).padStart(2,
+'0');
+const mm = String(norm % 60).padStart(2,
+'0');
+return
+`${hh}:${mm}`
+;
+}
+function formatDDMM(iso) {
+const parts = iso.split('
+-
+');
+return
+`${parts[2]}/${parts[1]}`
+;
+}
+function escapeHTML(str) {
+if (!str) return '';
+return str.replace(/[&<>"']/g, c =>
+({'&':'&amp;'
+,
+'<':'&lt;'
+,
+'>':'&gt;'
+,
+'"':'&quot;'
+,
+"'":'&#39;'}[c]));
+}
+function isNightTime(timeStr, settings) {
+const m = timeToMins(timeStr);
+const start = timeToMins(settings.nightStart);
+const end = timeToMins(settings.nightEnd);
+if (start > end) {
+return m >= start || m < end;
+}
+return m >= start && m < end;
+}
+function toTimestamp(dateISO, timeStr) {
+const [y, mo, d] = dateISO.split('
+-
+').map(Number);
+const [h, mi] = (timeStr || '00:00').split(':').map(Number);
+return new Date(y, mo - 1, d, h, mi, 0, 0).getTime();
+}
+function findLatestFeed(prof) {
+let best = null;
+Object.keys(prof.days).forEach(dISO => {
+(prof.days[dISO].feeds || []).forEach((f, idx) => {
+if (!f.time) return;
+const ts = toTimestamp(dISO, f.time);
+if (!best || ts >= best.ts) {
+best = { dateISO: dISO, index: idx, item: f, ts };
+}
+});
+});
+return best;
+}
+function findOngoingNap(prof) {
+let open = null;
+Object.keys(prof.days).sort().forEach(dISO => {
+(prof.days[dISO].naps || []).forEach((n, idx) => {
+if (n.start && !n.end) {
+open = { dateISO: dISO, index: idx, item: n };
+}
+});
+});
+return open;
+}
+function findLatestCompletedNap(prof) {
+let best = null;
+Object.keys(prof.days).forEach(dISO => {
+(prof.days[dISO].naps || []).forEach((n, idx) => {
+if (!n.start || !n.end) return;
+let endTs = toTimestamp(dISO, n.end);
+if (timeToMins(n.end) < timeToMins(n.start)) {
+endTs += 86400000;
+}
+if (!best || endTs >= best.endTs) {
+best = { dateISO: dISO, index: idx, item: n, endTs };
+}
+});
+});
+return best;
+}
+function renderProfiles() {
+const bar = document.getElementById('profile-bar');
+bar.innerHTML = '';
+Object.keys(state.profiles).forEach(name => {
+const btn = document.createElement('button');
+btn.className =
+`
+profile-pill ${name === state.activeChild ? 'active' : ''}`
+btn.textContent =
+`👶 ${name}`
+;
+btn.onclick = () => {
+state.activeChild = name;
+saveState();
+;
+};
+bar.appendChild(btn);
+});
+const addBtn = document.createElement('button');
+addBtn.className = 'profile-pill add-btn';
+addBtn.textContent = '+ Hijo';
+addBtn.onclick = () => {
+document.getElementById('input-profile-name').value = '';
+document.getElementById('modal-profile').classList.remove('hidden');
+};
+bar.appendChild(addBtn);
+}
+function confirmNewProfile() {
+const nameInput = document.getElementById('input-profile-name').value.trim();
+if (!nameInput) return;
+if (!state.profiles[nameInput]) {
+state.profiles[nameInput] = defaultProfileData();
+}
+state.activeChild = nameInput;
+closeModals();
+saveState();
+}
+function renderHome() {
+todayISO = getLocalTodayISO();
+const prof = getActiveProfile();
+const s = prof.settings;
+document.getElementById('today-date-title').textContent = formatDDMM(todayISO);
+// 1. PROYECCIÓN DE LECHE
+const latestFeed = findLatestFeed(prof);
+const milkTimeEl = document.getElementById('next-milk-time');
+const milkBadgeEl = document.getElementById('next-milk-badge');
+if (latestFeed) {
+const night = isNightTime(latestFeed.item.time, s);
+const gapHours = night ? s.nightMilkGap : s.dayMilkGap;
+const nextMins = timeToMins(latestFeed.item.time) + gapHours * 60;
+const nextTimeStr = minsToTime(nextMins);
+const nextTimestamp = latestFeed.ts + gapHours * 3600000;
+const isOverdue = Date.now() > nextTimestamp;
+milkTimeEl.textContent = nextTimeStr;
+milkBadgeEl.textContent = isOverdue
+? `
+⏰ ¡Ya le toca! (${night ? 'Noche' : 'Día'} ${gapHours}h)`
+: (night ? `
+🌙 Noche (${gapHours}h)`
+`
+:
+☀ Día (${gapHours}h)`);
+} else {
+milkTimeEl.textContent = '
+--:--
+';
+milkBadgeEl.textContent =
+`Día (${s.dayMilkGap}h)`
+;
+}
+// 2. PROYECCIÓN DE SIESTA / DESPERTAR PROYECTADO (Día vs Noche)
+const ongoingNap = findOngoingNap(prof);
+const banner = document.getElementById('ongoing-nap-container');
+const napLabelEl = document.getElementById('next-nap-label');
+const napTimeEl = document.getElementById('next-nap-time');
+const napBadgeEl = document.getElementById('next-nap-badge');
+if (ongoingNap) {
+banner.classList.remove('hidden');
+document.getElementById('ongoing-nap-start').textContent =
+ongoingNap.item.start;
+finishingNapRef = { dateISO: ongoingNap.dateISO, index: ongoingNap.index };
+const startM = timeToMins(ongoingNap.item.start);
+const isNight = isNightTime(ongoingNap.item.start, s);
+const minH = isNight ? (s.nightNapMin || 1.5) : (s.napDurationMin || 1.0);
+const maxH = isNight ? (s.nightNapMax || 3.0) : (s.napDurationMax || 2.0);
+const minWakeStr = minsToTime(startM + minH * 60);
+const maxWakeStr = minsToTime(startM + maxH * 60);
+napLabelEl.textContent = isNight ? 'Despertar Proyectado (Noche)' : 'Despertar
+Proyectado (Día)';
+napTimeEl.textContent =
+`${minWakeStr} - ${maxWakeStr}`
+;
+napTimeEl.classList.add('range-text');
+napBadgeEl.textContent = isNight ? `
+🌙 Noche (${minH}h - ${maxH}h)`
+(${minH}h - ${maxH}h)`
+;
+} else {
+banner.classList.add('hidden');
+finishingNapRef = null;
+napLabelEl.textContent = 'Próxima Siesta';
+napTimeEl.classList.remove('range-text');
+:
+`
+☀ Día
+const latestNap = findLatestCompletedNap(prof);
+if (latestNap) {
+const wakeTimeStr = latestNap.item.end;
+const night = isNightTime(wakeTimeStr, s);
+// Durante el día usa las horas despierto (dayNapGap); durante la noche usa 0
+porque se encadena altiro
+const gapHours = night ? 0 : s.dayNapGap;
+const nextNapTimeStr = minsToTime(timeToMins(wakeTimeStr) + gapHours *
+60);
+const nextNapTs = latestNap.endTs + gapHours * 3600000;
+const isOverdue = Date.now() > nextNapTs;
+napTimeEl.textContent = nextNapTimeStr;
+napBadgeEl.textContent = isOverdue
+? `
+⏰ ¡Ya le toca! (${night ? 'Noche' : 'Día'})`
+: (night ? `
+🌙 Noche (Continuo)`
+`
+:
+☀ Día (${gapHours}h despierto)`);
+} else {
+napTimeEl.textContent = '
+--:--
+';
+napBadgeEl.textContent =
+`Día (${s.dayNapGap}h)`
+;
+}
+}
+renderDayItemsList(todayISO,
+${state.activeChild}.
+`);
+'today-list'
+,
+`Sin registros hoy para
+}
+function renderDayItemsList(dateISO, containerId, emptyMsg) {
+const prof = getActiveProfile();
+const day = ensureDay(prof, dateISO);
+const listEl = document.getElementById(containerId);
+let combined = [];
+day.feeds.forEach((f, idx) => combined.push({ sortMins: timeToMins(f.time), category:
+'feeds'
+, index: idx, data: f }));
+day.naps.forEach((n, idx) => combined.push({ sortMins: timeToMins(n.start),
+category: 'naps'
+, index: idx, data: n }));
+day.foods.forEach((fo, idx) => combined.push({ sortMins: timeToMins(fo.time),
+category: 'foods'
+, index: idx, data: fo }));
+combined.sort((a, b) => a.sortMins - b.sortMins);
+if (!combined.length) {
+listEl.innerHTML =
+0;">${emptyMsg}</p>`
+;
+return;
+`<p style="color:var(--text-muted); text-align:center; margin:8px
+}
+let html = '';
+combined.forEach(entry => {
+const { category, index, data } = entry;
+const commentPreview = data.comment && data.comment.trim()
+? `<div class="item-comment-preview">💬
+${escapeHTML(data.comment.trim())}</div>`
+: '';
+if (category === 'feeds') {
+html +=
+`<div class="today-item type-feed"
+onclick="openItemDetail('${dateISO}'
+'feeds'
+,
+, ${index})">
+<div class="item-main">
+<div class="item-title">🍼 <strong>${data.time}</strong> •
+${escapeHTML(data.type)}</div>
+${commentPreview}
+</div>
+<span class="item-chevron">›</span>
+</div>`
+;
+} else if (category === 'naps') {
+if (data.end) {
+html +=
+`<div class="today-item type-nap"
+onclick="openItemDetail('${dateISO}'
+,
+'naps'
+, ${index})">
+<div class="item-main">
+<div class="item-title">☁ <strong>${data.start} a ${data.end}</strong> •
+Siesta</div>
+${commentPreview}
+</div>
+<span class="item-chevron">›</span>
+</div>`
+;
+} else {
+html +=
+`<div class="today-item type-nap"
+onclick="openItemDetail('${dateISO}'
+,
+'naps'
+, ${index})">
+<div class="item-main">
+<div class="item-title">😴 <strong>Inició ${data.start}</strong> •
+Durmiendo...
+</div>
+${commentPreview}
+</div>
+<button class="finish-inline-btn" onclick="event.stopPropagation();
+openFinishNapModal('${dateISO}'
+, ${index})">☀ Despertó</button>
+</div>`
+;
+}
+} else if (category === 'foods') {
+html +=
+`<div class="today-item type-food"
+onclick="openItemDetail('${dateISO}'
+'foods'
+,
+, ${index})">
+<div class="item-main">
+<div class="item-title">🥄 <strong>${data.time}</strong> •
+${escapeHTML(data.foodType)} (${data.amount} ${data.unit})</div>
+${commentPreview}
+</div>
+<span class="item-chevron">›</span>
+</div>`
+;
+}
+});
+listEl.innerHTML = html;
+}
+function openItemDetail(dateISO, category, index) {
+viewingItemRef = { dateISO, category, index };
+const prof = getActiveProfile();
+const item = prof.days[dateISO][category][index];
+const infoBox = document.getElementById('detail-info-rows');
+const commentBox = document.getElementById('detail-comment-text');
+if (category === 'feeds') {
+document.getElementById('detail-modal-title').textContent = '🍼 Toma de Leche';
+infoBox.innerHTML =
+`
+<div
+class="detail-row"><span>Fecha</span><strong>${formatDDMM(dateISO)}</strong></div>
+<div
+class="detail-row"><span>Hora</span><strong>${item.time}</strong></div>
+<div
+class="detail-row"><span>Tipo</span><strong>${escapeHTML(item.type)}</strong></div>
+`
+;
+} else if (category === 'naps') {
+document.getElementById('detail-modal-title').textContent = '☁ Registro de
+Siesta';
+let durText = 'En curso';
+if (item.end) {
+const sM = timeToMins(item.start);
+const eM = timeToMins(item.end);
+const diff = eM >= sM ? (eM - sM) : (1440 - sM + eM);
+durText =
+`${(diff / 60).toFixed(1)} horas (${diff} min)`
+;
+}
+infoBox.innerHTML =
+`
+<div
+class="detail-row"><span>Fecha</span><strong>${formatDDMM(dateISO)}</strong></div>
+<div
+class="detail-row"><span>Inicio</span><strong>${item.start}</strong></div>
+<div class="detail-row"><span>Fin</span><strong>${item.end ||
+'Durmiendo...
+'}</strong></div>
+<div
+class="detail-row"><span>Duración</span><strong>${durText}</strong></div>
+`
+;
+} else if (category === 'foods') {
+document.getElementById('detail-modal-title').textContent = '🥄 Registro de
+Comida';
+infoBox.innerHTML =
+`
+<div
+class="detail-row"><span>Fecha</span><strong>${formatDDMM(dateISO)}</strong></div>
+<div
+class="detail-row"><span>Hora</span><strong>${item.time}</strong></div>
+<div
+class="detail-row"><span>Comida</span><strong>${escapeHTML(item.foodType)}</strong
+></div>
+<div class="detail-row"><span>Cantidad</span><strong>${item.amount}
+${item.unit}</strong></div>
+`
+;
+}
+if (item.comment && item.comment.trim()) {
+commentBox.textContent = item.comment.trim();
+commentBox.style.color = 'var(--text-dark)';
+commentBox.style.fontStyle = 'normal';
+} else {
+commentBox.textContent = 'Sin comentarios. Toca el ícono de lápiz (✏) arriba a
+la derecha para agregar una nota.
+';
+commentBox.style.color = 'var(--text-muted)';
+commentBox.style.fontStyle = 'italic';
+}
+document.getElementById('modal-detail').classList.remove('hidden');
+}
+function deleteCurrentDetailItem() {
+if (!viewingItemRef) return;
+const { dateISO, category, index } = viewingItemRef;
+getActiveProfile().days[dateISO][category].splice(index, 1);
+closeModals();
+saveState();
+}
+function switchToEditFromDetail() {
+if (!viewingItemRef) return;
+const { dateISO, category, index } = viewingItemRef;
+editingItemRef = { dateISO, category, index };
+const item = getActiveProfile().days[dateISO][category][index];
+document.getElementById('modal-detail').classList.add('hidden');
+if (category === 'feeds') {
+document.getElementById('milk-modal-title').textContent = '
+✏ Editar Leche';
+selectMilkType(item.type || 'Leche Materna');
+document.getElementById('input-milk-time').value = item.time || nowHHMM();
+document.getElementById('input-milk-comment').value = item.comment || '';
+document.getElementById('modal-milk').classList.remove('hidden');
+} else if (category === 'naps') {
+finishingNapRef = null;
+document.getElementById('nap-modal-title').textContent = '
+✏ Editar Siesta';
+document.getElementById('nap-mode-selector').classList.remove('hidden');
+setNapMode(item.end ? 'complete' : 'startOnly');
+document.getElementById('input-nap-start').value = item.start || nowHHMM();
+document.getElementById('input-nap-end').value = item.end || nowHHMM();
+document.getElementById('input-nap-comment').value = item.comment || '';
+document.getElementById('modal-nap').classList.remove('hidden');
+} else if (category === 'foods') {
+document.getElementById('food-modal-title').textContent = '
+✏ Editar Comida';
+document.getElementById('input-food-name').value = item.foodType || '';
+selectFoodUnit(item.unit || 'mg');
+document.getElementById('input-food-amount').value = item.amount || '';
+document.getElementById('input-food-time').value = item.time || nowHHMM();
+document.getElementById('input-food-comment').value = item.comment || '';
+document.getElementById('modal-food').classList.remove('hidden');
+}
+function nowHHMM() {
+return new Date().toTimeString().slice(0, 5);
+}
+}
+Leche';
+function openMilkModal() {
+editingItemRef = null;
+document.getElementById('milk-modal-title').textContent = '🍼 Registrar Toma de
+selectMilkType('Leche Materna');
+document.getElementById('input-milk-time').value = nowHHMM();
+document.getElementById('input-milk-comment').value = '';
+document.getElementById('modal-milk').classList.remove('hidden');
+}
+function selectMilkType(type) {
+currentMilkType = type;
+document.getElementById('btn-milk-breast').classList.toggle('active'
+, type === 'Leche
+Materna');
+'Fórmula');
+}
+document.getElementById('btn-milk-formula').classList.toggle('active'
+, type ===
+};
+function confirmMilk() {
+const t = document.getElementById('input-milk-time').value;
+if (!t) return;
+const comment = document.getElementById('input-milk-comment').value.trim();
+const prof = getActiveProfile();
+if (editingItemRef && editingItemRef.category === 'feeds') {
+const targetDay = ensureDay(prof, editingItemRef.dateISO);
+targetDay.feeds[editingItemRef.index] = { time: t, type: currentMilkType, comment
+targetDay.feeds.sort((a, b) => timeToMins(a.time) - timeToMins(b.time));
+} else {
+const day = ensureDay(prof, getLocalTodayISO());
+day.feeds.push({ time: t, type: currentMilkType, comment });
+day.feeds.sort((a, b) => timeToMins(a.time) - timeToMins(b.time));
+}
+closeModals();
+saveState();
+}
+function openNapModal() {
+editingItemRef = null;
+finishingNapRef = null;
+document.getElementById('nap-modal-title').textContent = '☁ Registrar Siesta';
+document.getElementById('nap-mode-selector').classList.remove('hidden');
+setNapMode('startOnly');
+document.getElementById('input-nap-start').value = nowHHMM();
+document.getElementById('input-nap-end').value = nowHHMM();
+document.getElementById('input-nap-comment').value = '';
+document.getElementById('modal-nap').classList.remove('hidden');
+}
+function setNapMode(mode) {
+currentNapMode = mode;
+document.getElementById('btn-nap-start-only').classList.toggle('active'
+, mode ===
+'startOnly');
+document.getElementById('btn-nap-complete').classList.toggle('active'
+, mode ===
+'complete');
+document.getElementById('nap-start-wrapper').classList.remove('hidden');
+document.getElementById('nap-end-wrapper').classList.toggle('hidden'
+, mode ===
+'startOnly');
+}
+function openFinishNapModal(dateISO, idx) {
+editingItemRef = null;
+const prof = getActiveProfile();
+let targetRef = finishingNapRef;
+if (dateISO !== undefined && idx !== undefined) {
+targetRef = { dateISO, index: idx };
+}
+if (!targetRef) return;
+finishingNapRef = targetRef;
+const existingNap = prof.days[targetRef.dateISO].naps[targetRef.index];
+document.getElementById('nap-modal-title').textContent = '☀ Hora en que
+Despertó';
+document.getElementById('nap-mode-selector').classList.add('hidden');
+document.getElementById('nap-start-wrapper').classList.add('hidden');
+document.getElementById('nap-end-wrapper').classList.remove('hidden');
+document.getElementById('input-nap-end').value = nowHHMM();
+document.getElementById('input-nap-comment').value = existingNap.comment || '';
+document.getElementById('modal-nap').classList.remove('hidden');
+}
+function confirmNap() {
+const prof = getActiveProfile();
+const comment = document.getElementById('input-nap-comment').value.trim();
+const s = prof.settings;
+if (editingItemRef && editingItemRef.category === 'naps') {
+const targetDay = ensureDay(prof, editingItemRef.dateISO);
+const startVal = document.getElementById('input-nap-start').value;
+const endVal = currentNapMode === 'complete' ?
+document.getElementById('input-nap-end').value : null;
+targetDay.naps[editingItemRef.index] = { start: startVal, end: endVal, comment };
+targetDay.naps.sort((a, b) => timeToMins(a.start) - timeToMins(b.start));
+} else if (finishingNapRef !== null) {
+const wakeTime = document.getElementById('input-nap-end').value;
+const targetDay = ensureDay(prof, finishingNapRef.dateISO);
+const oldNap = targetDay.naps[finishingNapRef.index];
+oldNap.end = wakeTime;
+oldNap.comment = comment;
+// TRUCO NOCTURNO INTELIGENTE: Si la siesta terminada era nocturna, hacer
+RESET instantáneo abriendo una nueva siesta al tiro
+const isNight = isNightTime(wakeTime, s) || isNightTime(oldNap.start, s);
+if (isNight) {
+targetDay.naps.push({ start: wakeTime, end: null, comment: '' });
+}
+} else {
+const day = ensureDay(prof, getLocalTodayISO());
+if (currentNapMode === 'startOnly') {
+day.naps.push({ start: document.getElementById('input-nap-start').value, end:
+null, comment });
+} else {
+day.naps.push({
+start: document.getElementById('input-nap-start').value,
+end: document.getElementById('input-nap-end').value,
+comment
+}
+});
+}
+day.naps.sort((a, b) => timeToMins(a.start) - timeToMins(b.start));
+closeModals();
+saveState();
+}
+function openFoodModal() {
+editingItemRef = null;
+document.getElementById('food-modal-title').textContent = '🥄 Registrar Comida';
+document.getElementById('input-food-name').value = '';
+selectFoodUnit('mg');
+document.getElementById('input-food-amount').value = '';
+document.getElementById('input-food-time').value = nowHHMM();
+document.getElementById('input-food-comment').value = '';
+document.getElementById('modal-food').classList.remove('hidden');
+}
+function selectFoodUnit(unit) {
+currentFoodUnit = unit;
+document.getElementById('food-unit-label').textContent = unit;
+['mg'
+,
+'g'
+,
+'kg'
+'ml'
+,
+,
+'oz'].forEach(u => {
+document.getElementById(`
+unit-${u}`).classList.toggle('active'
+, u === unit);
+});
+}
+function confirmFood() {
+const foodType = document.getElementById('input-food-name').value.trim() ||
+'Comida';
+const amount = parseFloat(document.getElementById('input-food-amount').value) ||
+0;
+const time = document.getElementById('input-food-time').value;
+const comment = document.getElementById('input-food-comment').value.trim();
+if (!time) return;
+const prof = getActiveProfile();
+if (editingItemRef && editingItemRef.category === 'foods') {
+const targetDay = ensureDay(prof, editingItemRef.dateISO);
+targetDay.foods[editingItemRef.index] = { time, foodType, amount, unit:
+currentFoodUnit, comment };
+targetDay.foods.sort((a, b) => timeToMins(a.time) - timeToMins(b.time));
+} else {
+const day = ensureDay(prof, getLocalTodayISO());
+day.foods.push({ time, foodType, amount, unit: currentFoodUnit, comment });
+day.foods.sort((a, b) => timeToMins(a.time) - timeToMins(b.time));
+}
+closeModals();
+saveState();
+}
+function closeModals() {
+['modal-milk'
+,
+'modal-nap'
+'modal-food'
+'modal-detail'
+,
+,
+,
+document.getElementById(id).classList.add('hidden');
+'modal-profile'].forEach(id => {
+});
+editingItemRef = null;
+viewingItemRef = null;
+}
+const monthNames =
+['Enero'
+'Febrero'
+'Marzo'
+'Abril'
+,
+,
+,
+,
+'Mayo'
+'Junio'
+'Julio'
+,
+,
+,
+'Agosto'
+,
+'Septiembre'
+'Octubre'
+'Noviembr
+,
+,
+e'
+,
+'Diciembre'];
+function initCalendarSelectors() {
+const mSel = document.getElementById('cal-month-select');
+const ySel = document.getElementById('cal-year-select');
+if (!mSel.options.length) {
+monthNames.forEach((m, idx) => {
+const opt = document.createElement('option');
+opt.value = idx;
+opt.textContent = m;
+mSel.appendChild(opt);
+});
+for (let y = 2024; y <= 2030; y++) {
+const opt = document.createElement('option');
+opt.value = y;
+opt.textContent = y;
+ySel.appendChild(opt);
+}
+}
+mSel.value = calMonth;
+ySel.value = calYear;
+}
+function onMonthYearSelect() {
+calMonth = parseInt(document.getElementById('cal-month-select').value, 10);
+calYear = parseInt(document.getElementById('cal-year-select').value, 10);
+renderCalendar();
+}
+function changeMonth(delta) {
+calMonth += delta;
+if (calMonth < 0) { calMonth = 11; calYear--; }
+if (calMonth > 11) { calMonth = 0; calYear++; }
+renderCalendar();
+}
+function renderCalendar() {
+initCalendarSelectors();
+const grid = document.getElementById('cal-grid-body');
+grid.innerHTML = '';
+const firstDay = new Date(calYear, calMonth, 1).getDay();
+const offset = (firstDay + 6) % 7;
+const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+const prof = getActiveProfile();
+for (let i = 0; i < offset; i++) {
+grid.appendChild(document.createElement('div'));
+}
+for (let d = 1; d <= daysInMonth; d++) {
+const iso =
+`${calYear}-${String(calMonth+1).padStart(2,
+'0')}-${String(d).padStart(2,
+'0')}`
+;
+const dayData = prof.days[iso];
+const hasData = dayData && (
+(dayData.feeds && dayData.feeds.length > 0) ||
+(dayData.naps && dayData.naps.length > 0) ||
+(dayData.foods && dayData.foods.length > 0)
+);
+const cell = document.createElement('div');
+cell.className =
+`
+cal-cell ${hasData ? 'has-data' : ''} ${iso === selectedCalDate ?
+'selected' : ''}`
+;
+cell.innerHTML =
+`<span>${d}</span>${hasData ? '<div class="cal-dot"></div>' :
+''}`
+;
+cell.onclick = () => {
+selectedCalDate = iso;
+renderCalendar();
+};
+grid.appendChild(cell);
+}
+document.getElementById('selected-cal-date-label').textContent =
+formatDDMM(selectedCalDate);
+renderDayItemsList(selectedCalDate,
+'cal-day-items-list'
+,
+fecha.
+');
+'Sin registros en esta
+const timeline = document.getElementById('gcal-timeline');
+timeline.innerHTML = '';
+for (let h = 0; h < 24; h++) {
+const row = document.createElement('div');
+row.className = 'gcal-hour-row';
+row.textContent =
+`${String(h).padStart(2,
+'0')}:00`
+;
+timeline.appendChild(row);
+}
+const selData = ensureDay(prof, selectedCalDate);
+selData.feeds.forEach((f, idx) => {
+const topPx = (timeToMins(f.time) / 60) * 36;
+const ev = document.createElement('div');
+ev.className = 'gcal-event milk';
+ev.style.top =
+`${topPx}px
+`
+;
+ev.textContent =
+`🍼 ${f.time} • ${f.type}${f.comment ? ' 💬' : ''}`
+;
+ev.onclick = () => openItemDetail(selectedCalDate,
+'feeds'
+, idx);
+timeline.appendChild(ev);
+});
+selData.foods.forEach((fo, idx) => {
+const topPx = (timeToMins(fo.time) / 60) * 36;
+const ev = document.createElement('div');
+ev.className = 'gcal-event food';
+ev.style.top =
+`${topPx}px
+`
+;
+ev.textContent =
+`🥄 ${fo.time} • ${fo.foodType}
+(${fo.amount}${fo.unit})${fo.comment ? ' 💬' : ''}`
+;
+ev.onclick = () => openItemDetail(selectedCalDate,
+timeline.appendChild(ev);
+selData.naps.forEach((n, idx) => {
+const startM = timeToMins(n.start);
+const endM = n.end ? timeToMins(n.end) : startM + 45;
+const durationM = endM >= startM ? (endM - startM) : (1440 - startM + endM);
+const topPx = (startM / 60) * 36;
+const heightPx = Math.max(26, (durationM / 60) * 36);
+const ev = document.createElement('div');
+ev.className = 'gcal-event nap';
+ev.style.top =
+`${topPx}px
+`
+;
+ev.style.height =
+`${heightPx}px
+`
+;
+ev.textContent =
+`
+☁ Siesta (${n.start} - ${n.end || 'En curso'})${n.comment ? ' 💬' :
+''}`
+;
+'foods'
+, idx);
+});
+ev.onclick = () => openItemDetail(selectedCalDate,
+timeline.appendChild(ev);
+'naps'
+, idx);
+});
+}
+function setStatsRange(days) {
+statsRangeDays = days;
+[7, 30, 365].forEach(d => {
+document.getElementById(`
+range-${d}`).classList.toggle('active'
+, d === days);
+});
+renderStats();
+}
+function drawLineChart(svgId, labels, values, strokeColor, unit) {
+const svg = document.getElementById(svgId);
+if (!values.length) {
+svg.innerHTML = '<text x="170" y="85" text-anchor="middle" fill="#8C8275"
+font-size="13">Agrega registros para ver la línea de tendencia</text>';
+return;
+}
+const maxV = Math.max(...values, 4);
+const minV = 0;
+const w = 290, h = 110, padL = 25, padT = 22;
+const pts = values.map((v, i) => {
+const x = padL + (values.length === 1 ? w / 2 : (i / (values.length - 1)) * w);
+const y = padT + h - ((v - minV) / (maxV - minV)) * h;
+return { x, y, v, label: labels[i] };
+});
+const polyPoints = pts.map(p => `${p.x},${p.y}`).join(' ');
+let inner =
+`<polyline fill="none" stroke="${strokeColor}" stroke-width="3.5"
+stroke-linecap="round" stroke-linejoin="round" points="${polyPoints}" />`
+;
+pts.forEach(p => {
+inner +=
+`<circle cx="${p.x}" cy="${p.y}" r="5" fill="${strokeColor}" />`
+;
+inner +=
+`<text x="${p.x}" y="${p.y - 8}" text-anchor="middle" font-size="10"
+fill="#4A4238" font-weight="bold">${p.v}${unit}</text>`
+;
+inner +=
+`<text x="${p.x}" y="${padT + h + 20}" text-anchor="middle"
+font-size="10" fill="#8C8275">${p.label}</text>`
+;
+});
+svg.innerHTML = inner;
+}
+function renderStats() {
+const prof = getActiveProfile();
+const allKeys = Object.keys(prof.days)
+.filter(k => {
+const d = prof.days[k];
+return (d.feeds && d.feeds.length > 0) || (d.naps && d.naps.length > 0) ||
+(d.foods && d.foods.length > 0);
+})
+.sort()
+.slice(-statsRangeDays);
+const labels = allKeys.map(formatDDMM);
+const avgMilkGaps = allKeys.map(k => {
+const feeds = prof.days[k].feeds || [];
+if (feeds.length < 2) return prof.settings.dayMilkGap;
+let diffs = [];
+for (let i = 1; i < feeds.length; i++) {
+diffs.push((timeToMins(feeds[i].time) - timeToMins(feeds[i-1].time)) / 60);
+}
+return Number((diffs.reduce((a,b)=>a+b,0) / diffs.length).toFixed(1));
+});
+const totalSleepHours = allKeys.map(k => {
+const naps = (prof.days[k].naps || []).filter(n => n.end);
+const mins = naps.reduce((acc, n) => {
+const s = timeToMins(n.start);
+const e = timeToMins(n.end);
+return acc + (e >= s ? (e - s) : (1440 - s + e));
+}, 0);
+return Number((mins / 60).toFixed(1));
+});
+const totalFoodAmounts = allKeys.map(k => {
+const foods = prof.days[k].foods || [];
+const sum = foods.reduce((acc, fo) => acc + (Number(fo.amount) || 0), 0);
+return Math.round(sum);
+});
+const globalMilkGap = avgMilkGaps.length
+? (avgMilkGaps.reduce((a,b)=>a+b,0) / avgMilkGaps.length).toFixed(1)
+: '
+--
+';
+document.getElementById('kpi-milk-gap').textContent =
+`${globalMilkGap} h`
+;
+let foodGapsAll = [];
+let firstFoodMins = [];
+let totalFoodCount = 0;
+allKeys.forEach(k => {
+const foods = prof.days[k].foods || [];
+totalFoodCount += foods.length;
+if (foods.length > 0) firstFoodMins.push(timeToMins(foods[0].time));
+for (let i = 1; i < foods.length; i++) {
+foodGapsAll.push((timeToMins(foods[i].time) - timeToMins(foods[i-1].time)) / 60);
+}
+});
+document.getElementById('kpi-food-gap').textContent = foodGapsAll.length
+? `${(foodGapsAll.reduce((a,b)=>a+b,0) / foodGapsAll.length).toFixed(1)} h`
+: '
+-- h';
+document.getElementById('kpi-food-time').textContent = firstFoodMins.length
+? minsToTime(firstFoodMins.reduce((a,b)=>a+b,0) / firstFoodMins.length)
+: '
+--:--
+';
+document.getElementById('kpi-food-count').textContent = allKeys.length
+? (totalFoodCount / allKeys.length).toFixed(1)
+: '0';
+drawLineChart('chart-milk-gap'
+, labels, avgMilkGaps,
+'#C98A8E'
+,
+'h');
+drawLineChart('chart-sleep-hours'
+, labels, totalSleepHours,
+'#6E9483'
+,
+'h');
+drawLineChart('chart-food-amount'
+, labels, totalFoodAmounts,
+'#D99B82'
+,
+'');
+}
+function loadSettingsInputs() {
+const s = getActiveProfile().settings;
+document.getElementById('set-day-nap').value = s.dayNapGap;
+document.getElementById('set-nap-min').value = s.napDurationMin ?? 1.0;
+document.getElementById('set-nap-max').value = s.napDurationMax ?? 2.0;
+document.getElementById('set-day-milk').value = s.dayMilkGap;
+document.getElementById('set-night-start').value = s.nightStart;
+document.getElementById('set-night-end').value = s.nightEnd;
+document.getElementById('set-night-nap-min').value = s.nightNapMin ?? 1.5;
+document.getElementById('set-night-nap-max').value = s.nightNapMax ?? 3.0;
+document.getElementById('set-night-milk').value = s.nightMilkGap;
+}
+1.5;
+3.0;
+function saveSettings() {
+const s = getActiveProfile().settings;
+s.dayNapGap = parseFloat(document.getElementById('set-day-nap').value) || 2;
+s.napDurationMin = parseFloat(document.getElementById('set-nap-min').value) || 1;
+s.napDurationMax = parseFloat(document.getElementById('set-nap-max').value) || 2;
+s.dayMilkGap = parseFloat(document.getElementById('set-day-milk').value) || 3;
+s.nightStart = document.getElementById('set-night-start').value || '21:00';
+s.nightEnd = document.getElementById('set-night-end').value || '07:00';
+s.nightNapMin = parseFloat(document.getElementById('set-night-nap-min').value) ||
+s.nightNapMax = parseFloat(document.getElementById('set-night-nap-max').value) ||
+s.nightMilkGap = parseFloat(document.getElementById('set-night-milk').value) || 5;
+saveState();
+}
+function switchTab(tab) {
+['home'
+'calendar'
+'stats'
+,
+,
+,
+'settings'].forEach(t => {
+document.getElementById(`
+view-${t}`).classList.toggle('hidden'
+, t !== tab);
+document.getElementById(`tab-${t}`).classList.toggle('active'
+, t === tab);
+});
+renderAll();
+if (tab === 'calendar') {
+setTimeout(() => {
+const box = document.getElementById('gcal-scroll-box');
+if (box) box.scrollTop = 7 * 36;
+}, 50);
+}
+}
+function renderAll() {
+renderProfiles();
+renderHome();
+renderCalendar();
+renderStats();
+loadSettingsInputs();
+}
+renderAll();
+setInterval(renderHome, 30000);
+</script>
 </body>
 </html>
- 
