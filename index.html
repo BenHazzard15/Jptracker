@@ -7,6 +7,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Mis Bebés">
     <title>Mis Bebés - Rutina</title>
+    <!-- Generador automático de ícono PNG real para iPhone -->
     <script>
       (function() {
         try {
@@ -131,7 +132,7 @@
         .gcal-event { position: absolute; left: 58px; right: 12px; border-radius: 8px; padding: 3px 10px; font-size: 12px; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; align-items: center; cursor: pointer; }
         .gcal-event.milk { background: var(--pale-pink); border-left: 4px solid var(--deep-pink); height: 26px; z-index: 3; }
         .gcal-event.food { background: var(--pastel-peach); border-left: 4px solid var(--deep-peach); height: 26px; z-index: 4; }
-        .gcal-event.nap { background: var(--pastel-sage); border-left: 4px solid var(--deep-sage); z-index: 2; }
+        .gcal-event.nap { background: var(--pastel-sage); border-left: 4px solid var(--deep-sage); height: 26px; z-index: 2; }
 
         .range-pills { display: flex; gap: 8px; margin-bottom: 14px; }
         .range-pill { flex: 1; padding: 12px; border-radius: 14px; border: none; background: var(--card-beige); font-weight: 600; color: var(--text-dark); cursor: pointer; }
@@ -674,6 +675,7 @@
             const s = prof.settings;
             document.getElementById('today-date-title').textContent = formatDDMM(todayISO);
 
+            // 1. PROYECCIÓN DE LECHE
             const latestFeed = findLatestFeed(prof);
             const milkTimeEl = document.getElementById('next-milk-time');
             const milkBadgeEl = document.getElementById('next-milk-badge');
@@ -695,6 +697,7 @@
                 milkBadgeEl.textContent = `Día (${s.dayMilkGap}h)`;
             }
 
+            // 2. PROYECCIÓN DE SIESTA (CORREGIDO: Nunca asumir que duerme de noche a menos que haya siesta iniciada)
             const ongoingNap = findOngoingNap(prof);
             const banner = document.getElementById('ongoing-nap-container');
             const napLabelEl = document.getElementById('next-nap-label');
@@ -702,6 +705,7 @@
             const napBadgeEl = document.getElementById('next-nap-badge');
 
             if (ongoingNap) {
+                // Solo si TU SEÑORA inició una siesta, mostramos que duerme y el rango proyectado
                 banner.classList.remove('hidden');
                 document.getElementById('ongoing-nap-start').textContent = ongoingNap.item.start;
                 finishingNapRef = { dateISO: ongoingNap.dateISO, index: ongoingNap.index };
@@ -719,6 +723,7 @@
                 napTimeEl.classList.add('range-text');
                 napBadgeEl.textContent = isNight ? `🌙 Noche (${minH}h - ${maxH}h)` : `☀️ Día (${minH}h - ${maxH}h)`;
             } else {
+                // NO está durmiendo: mostrar próxima siesta
                 banner.classList.add('hidden');
                 finishingNapRef = null;
                 napLabelEl.textContent = 'Próxima Siesta';
@@ -728,7 +733,9 @@
                 if (latestNap) {
                     const wakeTimeStr = latestNap.item.end;
                     const night = isNightTime(wakeTimeStr, s);
-                    const gapHours = night ? 0 : s.dayNapGap; 
+                    
+                    // Si despertó de noche y aún no se vuelve a dormir, la próxima siesta es inmediata
+                    const gapHours = night ? 0 : s.dayNapGap;
                     const nextNapTimeStr = minsToTime(timeToMins(wakeTimeStr) + gapHours * 60);
                     const nextNapTs = latestNap.endTs + gapHours * 3600000;
                     const isOverdue = Date.now() > nextNapTs;
@@ -736,7 +743,7 @@
                     napTimeEl.textContent = nextNapTimeStr;
                     napBadgeEl.textContent = isOverdue
                         ? `⏰ ¡Ya le toca! (${night ? 'Noche' : 'Día'})`
-                        : (night ? `🌙 Noche (Continuo)` : `☀️ Día (${gapHours}h despierto)`);
+                        : (night ? `🌙 Noche (Dormir ahora)` : `☀️ Día (${gapHours}h despierto)`);
                 } else {
                     napTimeEl.textContent = '--:--';
                     napBadgeEl.textContent = `Día (${s.dayNapGap}h)`;
@@ -998,13 +1005,17 @@
                 oldNap.end = wakeTime;
                 oldNap.comment = comment;
 
-                // CORREGIDO: Solo se activa el reset nocturno si la siesta COMENZó y TERMINÓ dentro del horario nocturno
-                const startedNight = isNightTime(oldNap.start, s);
-                const endedNight = isNightTime(wakeTime, s);
-                if (startedNight && endedNight) {
+                // CORREGIDO: Solo se encadena automáticamente si despertó EN PLENA NOCHE
+                // Si la hora en que despertó ya es de día (ej: 07:15 am), NO se vuelve a dormir solo
+                const wakeIsNight = isNightTime(wakeTime, s);
+                const startWasNight = isNightTime(oldNap.start, s);
+                
+                if (wakeIsNight && startWasNight) {
+                    // Está en plena madrugada: se durmió de noche y despertó de noche -> nueva siesta al tiro
                     targetDay.naps.push({ start: wakeTime, end: null, comment: '' });
                 }
             } else {
+                // Registro de nueva siesta (se guarda directamente en el día de hoy)
                 const day = ensureDay(prof, getLocalTodayISO());
                 if (currentNapMode === 'startOnly') {
                     day.naps.push({ start: document.getElementById('input-nap-start').value, end: null, comment });
