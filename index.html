@@ -60,9 +60,7 @@
             margin-right: auto;
             user-select: none;
         }
-        .profile-bar {
-            display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 12px; scrollbar-width: none;
-        }
+        .profile-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 12px; scrollbar-width: none; }
         .profile-bar::-webkit-scrollbar { display: none; }
         .profile-pill {
             background: var(--card-beige); color: var(--text-muted); border: 2px solid transparent;
@@ -133,7 +131,7 @@
         .gcal-event { position: absolute; left: 58px; right: 12px; border-radius: 8px; padding: 3px 10px; font-size: 12px; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; align-items: center; cursor: pointer; }
         .gcal-event.milk { background: var(--pale-pink); border-left: 4px solid var(--deep-pink); height: 26px; z-index: 3; }
         .gcal-event.food { background: var(--pastel-peach); border-left: 4px solid var(--deep-peach); height: 26px; z-index: 4; }
-        .gcal-event.nap { background: var(--pastel-sage); border-left: 4px solid var(--deep-sage); height: 26px; z-index: 2; }
+        .gcal-event.nap { background: var(--pastel-sage); border-left: 4px solid var(--deep-sage); z-index: 2; }
 
         .range-pills { display: flex; gap: 8px; margin-bottom: 14px; }
         .range-pill { flex: 1; padding: 12px; border-radius: 14px; border: none; background: var(--card-beige); font-weight: 600; color: var(--text-dark); cursor: pointer; }
@@ -1000,8 +998,10 @@
                 oldNap.end = wakeTime;
                 oldNap.comment = comment;
 
-                const isNight = isNightTime(wakeTime, s) || isNightTime(oldNap.start, s);
-                if (isNight) {
+                // CORREGIDO: Solo se activa el reset nocturno si la siesta COMENZó y TERMINÓ dentro del horario nocturno
+                const startedNight = isNightTime(oldNap.start, s);
+                const endedNight = isNightTime(wakeTime, s);
+                if (startedNight && endedNight) {
                     targetDay.naps.push({ start: wakeTime, end: null, comment: '' });
                 }
             } else {
